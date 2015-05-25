@@ -3,7 +3,7 @@
     <type>com.microchip.mplab.nbide.embedded.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>lib_orbus_c</name>
+            <name>or_bus_c</name>
             <creation-uuid>9fb35930-0994-4289-b148-b12a5750b57e</creation-uuid>
             <make-project-type>0</make-project-type>
             <c-extensions>c</c-extensions>
