@@ -32,26 +32,6 @@ extern "C" {
      * Load all hashmaps from packet/packet.h and packet/unav.h
      */
     void init_hashmap();
-    
-    /**
-     * Save for all standard messages the data in tail and save in controller.
-     * Others messages, tipical for this board are saved with function
-     * save_other_data in file parsing_other_messages.h
-     * @param list_send a pointer to buffer to save information from board
-     * @param len length of list_send list
-     * @param info message to parsing
-     */
-    void saveData(packet_information_t* list_send, size_t len, packet_information_t* info);
-
-    /**
-     * Send for all standard messages the data. The information are saved
-     * in a information_packet_t by functions createPacket and createDataPacket
-     * in tail of this file.
-     * @param list_send a pointer to buffer to save information from board
-     * @param len length of list_send list
-     * @param info message to parsing
-     */
-    void sendData(packet_information_t* list_send, size_t len, packet_information_t* info);
 
     /**
      * In a packet we have more messages. A typical data packet

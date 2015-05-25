@@ -66,67 +66,6 @@ void init_hashmap() {
     INITIALIZE_HASHMAP_MOTION
 }
 
-void saveData(packet_information_t* list_send, size_t len, packet_information_t* info) {
-    message_abstract_u send;
-    if (info->type == HASHMAP_SYSTEM) {
-        switch (info->command) {
-            case SYSTEM_SERVICE:
-//                send.system_service = services(info->message.system_service);
-                list_send[len] = createDataPacket(info->command, info->type, &send);
-                break;
-            case SYSTEM_TASK_PRIORITY:
-            case SYSTEM_TASK_FRQ:
-//                set_process(info->command, info->message.system_task);
-                list_send[len] = createPacket(info->command, PACKET_ACK, info->type, NULL);
-                break;
-            case SYSTEM_TASK_NUM:
-            case SYSTEM_TASK_NAME:
-            case SYSTEM_TASK_TIME:
-            case SYSTEM_PARAMETER:
-            case SYSTEM_SERIAL_ERROR:
-                list_send[len] = createPacket(info->command, PACKET_NACK, info->type, NULL);
-                return;
-            default:
-                list_send[len] = createPacket(info->command, PACKET_NACK, info->type, NULL);
-                break;
-        }
-    } //else saveOtherData(list_send, len, info);
-}
-
-void sendData(packet_information_t* list_send, size_t len, packet_information_t* info) {
-    message_abstract_u send;
-    if (info->type == HASHMAP_SYSTEM) {
-        switch (info->command) {
-            case SYSTEM_SERVICE:
-//                send.system_service = services(info->message.system_service);
-                list_send[len] = createDataPacket(info->command, info->type, &send);
-                break;
-            case SYSTEM_TASK_PRIORITY:
-            case SYSTEM_TASK_FRQ:
-            case SYSTEM_TASK_TIME:
-            case SYSTEM_TASK_NUM:
-//                send.system_task = get_process(info->command, info->message.system_task);
-                list_send[len] = createDataPacket(info->command, info->type, &send);
-                break;
-            case SYSTEM_TASK_NAME:
-//                send.system_task_name = get_process_name(info->message.system_task_name);
-                list_send[len] = createDataPacket(info->command, info->type, &send);
-                break;
-            case SYSTEM_PARAMETER:
-//                send.system_parameter = parameter_system;
-                list_send[len] = createDataPacket(info->command, info->type, &send);
-                break;
-            case SYSTEM_SERIAL_ERROR:
-                send.system_error_serial = serial_error;
-                list_send[len] = createDataPacket(info->command, info->type, &send);
-                break;
-            default:
-                list_send[len] = createPacket(info->command, PACKET_NACK, info->type, NULL);
-                break;
-        }
-    } //else sendOtherData(list_send, len, info);
-}
-
 int parse_packet() {
     int i;
     unsigned int t = TMR1; // Timing function
@@ -141,17 +80,19 @@ int parse_packet() {
         packet_information_t* info = &list_data[i];
         switch (info->option) {
             case PACKET_DATA:
-                saveData(&list_data[0], i, info);
+//                saveData(&list_data[0], i, info);
                 break;
             case PACKET_REQUEST:
-                sendData(&list_data[0], i, info);
+//                sendData(&list_data[0], i, info);
                 break;
         }
     }
     //Send new packet
     packet_t send = encoder(&list_data[0], counter);
     if (send.length != 0)
-        pkg_send(receive_header, send);
+    {
+    }
+        //pkg_send(receive_header, send);
     return TMR1 - t; // Time of execution
 }
 

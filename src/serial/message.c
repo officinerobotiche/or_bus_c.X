@@ -42,8 +42,6 @@
 
 /*! Pointer to function, initialized for pkg_header */
 int (*pkg_parse) (unsigned char inchar) = &pkg_header;
-/*! Array for DMA UART buffer */
-unsigned char BufferTx[MAX_BUFF_TX] __attribute__((space(dma)));
 /*! Receive packet */
 packet_t receive_pkg;
 char receive_header;
@@ -51,7 +49,7 @@ unsigned int index_data = 0;
 system_error_serial_t serial_error;
 
 /******************************************************************************/
-/* Communication Functions                                                     */
+/* Communication Functions                                                    */
 /******************************************************************************/
 
 void init_buff_serial_error(){
@@ -116,10 +114,7 @@ unsigned char pkg_checksum(volatile unsigned char* Buffer, int FirstIndx, int La
     return ChkSum;
 }
 
-void pkg_send(char header, packet_t packet) {
-
-    //Wait to complete send packet from UART1 and DMA1.
-    while ((U1STAbits.TRMT == 0) && (DMA1CONbits.CHEN == 0));
+void build_pkg(unsigned char * BufferTx, char header, packet_t packet) {
 
     int i;
     BufferTx[0] = header;

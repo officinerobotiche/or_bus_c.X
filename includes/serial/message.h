@@ -62,10 +62,11 @@ extern "C" {
      * 1) Header -> pkg_header
      * 2) Length -> pkg_length
      * 3 to n+1) Data -> pkg_data
+     * @param BufferTx buffer to load all bytes
      * @param rxchar char character received from interrupt
      * @return boolean result from pointer function called on decode
      */
-    void pkg_send(char header, packet_t packet);
+    void build_pkg(unsigned char * BufferTx, char header, packet_t packet);
 
     /**
      * First function to decode Header from Serial interrupt
