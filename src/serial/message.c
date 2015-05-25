@@ -34,7 +34,7 @@
 #include <stdbool.h>       /* Includes true/false definition */
 #include <string.h>
 
-#include "serial/serial.h"
+#include "serial/message.h"
 
 /******************************************************************************/
 /* Global Variable Declaration                                                */

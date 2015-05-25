@@ -10,7 +10,8 @@
         <itemPath>includes/packet/motor.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="serial" projectFiles="true">
-        <itemPath>includes/serial/serial.h</itemPath>
+        <itemPath>includes/serial/message.h</itemPath>
+        <itemPath>includes/serial/frame.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -21,7 +22,8 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="serial" projectFiles="true">
-        <itemPath>src/serial/serial.c</itemPath>
+        <itemPath>src/serial/message.c</itemPath>
+        <itemPath>src/serial/frame.c</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
