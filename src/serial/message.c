@@ -127,8 +127,4 @@ void build_pkg(unsigned char * BufferTx, char header, packet_t packet) {
 
     // Create a checksum
     BufferTx[packet.length + HEAD_PKG] = pkg_checksum(BufferTx, HEAD_PKG, packet.length + HEAD_PKG);
-
-    DMA1CNT = (HEAD_PKG + packet.length + 1) - 1; // # of DMA requests
-    DMA1CONbits.CHEN = 1; // Enable DMA1 Channel
-    DMA1REQbits.FORCE = 1; // Manual mode: Kick-start the 1st transfer
 }

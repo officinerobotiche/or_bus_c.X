@@ -34,13 +34,8 @@
 #include <stdbool.h>       /* Includes true/false definition */
 #include <string.h>
 
-//#include "communication/parsing_other_messages.h"
-
 #include "serial/frame.h"
 #include "serial/message.h"
-
-//#include "system/user.h"
-//#include "system/system.h"
 
 //Table to convertion name (number) of message in a length
 //See packet/packet.h and packet/unav.h
@@ -48,9 +43,10 @@ static unsigned int hashmap_system[HASHMAP_SYSTEM_NUMBER];
 static unsigned int hashmap_motor[HASHMAP_MOTOR_NUMBER];
 static unsigned int hashmap_motion[HASHMAP_MOTION_NUMBER];
 
+frame_reader save_frame = NULL;
+frame_reader send_frame = NULL;
+
 /** GLOBAL VARIBLES */
-// From system/system.c
-//extern system_parameter_t parameter_system;
 // From serial/serial.c
 extern system_error_serial_t serial_error;
 extern packet_t receive_pkg;
@@ -66,7 +62,15 @@ void init_hashmap() {
     INITIALIZE_HASHMAP_MOTION
 }
 
-int parse_packet() {
+void set_frame_save(frame_reader save_f) {
+    save_frame = save_f;
+}
+
+void set_frame_send(frame_reader save_f) {
+    save_frame = save_f;
+}
+
+int parser() {
     int i;
     unsigned int t = TMR1; // Timing function
     packet_information_t list_data[BUFFER_LIST_PARSING];
@@ -80,19 +84,13 @@ int parse_packet() {
         packet_information_t* info = &list_data[i];
         switch (info->option) {
             case PACKET_DATA:
-//                saveData(&list_data[0], i, info);
+                save_frame(&list_data[0], i, info);
                 break;
             case PACKET_REQUEST:
-//                sendData(&list_data[0], i, info);
+                send_frame(&list_data[0], i, info);
                 break;
         }
     }
-    //Send new packet
-    packet_t send = encoder(&list_data[0], counter);
-    if (send.length != 0)
-    {
-    }
-        //pkg_send(receive_header, send);
     return TMR1 - t; // Time of execution
 }
 

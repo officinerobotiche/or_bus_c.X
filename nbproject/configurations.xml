@@ -8,6 +8,8 @@
         <itemPath>includes/packet/packet.h</itemPath>
         <itemPath>includes/packet/motion.h</itemPath>
         <itemPath>includes/packet/motor.h</itemPath>
+        <itemPath>includes/packet/navigation.h</itemPath>
+        <itemPath>includes/packet/system.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="serial" projectFiles="true">
         <itemPath>includes/serial/message.h</itemPath>
