@@ -37,8 +37,8 @@
  * Other messages for this board are in packet/unav.h
  */
 
-//#define PACKETS_MOTION
-//#define PACKETS_MOTOR
+#define PACKETS_MOTION
+#define PACKETS_MOTOR
 
 /*******/
 
@@ -49,7 +49,7 @@
 #include "packet/motor.h"
 #endif
 #ifdef PACKETS_NAVIGATION
-#include "packet/navigaation.h"
+#include "packet/navigation.h"
 #endif
 
 /** Buffer dimensions */

@@ -6,8 +6,12 @@
                    projectFiles="true">
       <logicalFolder name="f1" displayName="packet" projectFiles="true">
         <itemPath>includes/packet/packet.h</itemPath>
+        <itemPath>includes/packet/motion.h</itemPath>
+        <itemPath>includes/packet/motor.h</itemPath>
       </logicalFolder>
-      <itemPath>include/serial.h</itemPath>
+      <logicalFolder name="f2" displayName="serial" projectFiles="true">
+        <itemPath>includes/serial/serial.h</itemPath>
+      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -16,7 +20,9 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>src/serial.c</itemPath>
+      <logicalFolder name="f1" displayName="serial" projectFiles="true">
+        <itemPath>src/serial/serial.c</itemPath>
+      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -24,6 +30,9 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>includes/serial</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="3">
