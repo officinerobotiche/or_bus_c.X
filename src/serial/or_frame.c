@@ -89,7 +89,7 @@ int get_key(unsigned char hashmap) {
 }
 
 /* inline */
-bool parser(packet_information_t* list_to_send, unsigned short* len) {
+bool parser(packet_information_t* list_to_send, size_t* len) {
     unsigned int i;
     packet_information_t list_data[BUFFER_LIST_PARSING];
     unsigned short counter = 0;
@@ -104,10 +104,10 @@ bool parser(packet_information_t* list_to_send, unsigned short* len) {
         if(key != -1) {
             switch (info->option) {
                 case PACKET_DATA:
-                    hash[key].reader.receive(&list_to_send[0], i, info);
+                    hash[key].reader.receive(&list_to_send[0], len, info);
                     break;
                 case PACKET_REQUEST:
-                    hash[key].reader.send(&list_to_send[0], i, info);
+                    hash[key].reader.send(&list_to_send[0], len, info);
                     break;
             }
         }
@@ -139,6 +139,7 @@ packet_t encoderSingle(packet_information_t send) {
     return packet_send;
 }
 
+/* inline */
 packet_information_t createPacket(unsigned char command, unsigned char option, unsigned char type, message_abstract_u * packet) {
     packet_information_t information;
     information.command = command;
@@ -170,6 +171,7 @@ packet_information_t createPacket(unsigned char command, unsigned char option, u
     return information;
 }
 
+/* inline */
 packet_information_t createDataPacket(unsigned char command, unsigned char type, message_abstract_u * packet) {
     return createPacket(command, PACKET_DATA, type, packet);
 }

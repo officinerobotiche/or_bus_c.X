@@ -30,7 +30,7 @@ extern "C" {
     //Dimension of list messages to decode in a packet
     #define BUFFER_LIST_PARSING 10
 
-    typedef void (*frame_reader_t)(packet_information_t*, size_t, packet_information_t*);
+    typedef void (*frame_reader_t)(packet_information_t*, size_t*, packet_information_t*);
     /**
      * Init hashmap for decode messages
      * Load all hashmaps from packet/packet.h and packet/unav.h
@@ -62,7 +62,7 @@ extern "C" {
      * *This function is a long function*
      * @return time to compute parsing packet
      */
-    inline bool parser(packet_information_t* list_to_send, unsigned short* len);
+    inline bool parser(packet_information_t* list_to_send, size_t* len);
 
     /**
      * Get a list of messages to transform in a packet for serial communication.
@@ -92,7 +92,7 @@ extern "C" {
      * @param packet abstract_message to convert in a information_packet
      * @return information_packet ready to send
      */
-    packet_information_t createPacket(unsigned char command, unsigned char option, unsigned char type, message_abstract_u * packet);
+    inline packet_information_t createPacket(unsigned char command, unsigned char option, unsigned char type, message_abstract_u * packet);
     
     /**
      * Create an information packet for a message with data (D).
@@ -102,7 +102,7 @@ extern "C" {
      * @param packet abstract_message to convert in a information_packet
      * @return information_packet ready to send
      */
-    packet_information_t createDataPacket(unsigned char command, unsigned char type, message_abstract_u * packet);
+    inline packet_information_t createDataPacket(unsigned char command, unsigned char type, message_abstract_u * packet);
 
 #ifdef	__cplusplus
 }
