@@ -15,8 +15,8 @@
  * Public License for more details
  */
 
-#ifndef FRAME_MOTOR_H
-#define	FRAME_MOTOR_H
+#ifndef FRAMEMOTOR_H
+#define	FRAMEMOTOR_H
 
 #include <stdint.h>
 
@@ -220,4 +220,4 @@ typedef struct _motor_pid {
                                     hashmap_motor[MOTOR_TORQUE_PID] = LNG_MOTOR_PID;                      \
                                     hashmap_motor[MOTOR_TORQUE_REF] = LNG_MOTOR_CONTROL;
 
-#endif	/* FRAME_MOTOR_H */
+#endif	/* FRAMEMOTOR_H */

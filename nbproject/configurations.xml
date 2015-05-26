@@ -6,10 +6,10 @@
                    projectFiles="true">
       <logicalFolder name="f1" displayName="packet" projectFiles="true">
         <itemPath>includes/packet/packet.h</itemPath>
-        <itemPath>includes/packet/motion.h</itemPath>
-        <itemPath>includes/packet/navigation.h</itemPath>
         <itemPath>includes/packet/frame_system.h</itemPath>
         <itemPath>includes/packet/frame_motor.h</itemPath>
+        <itemPath>includes/packet/frame_navigation.h</itemPath>
+        <itemPath>includes/packet/frame_motion.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="serial" projectFiles="true">
         <itemPath>includes/serial/or_frame.h</itemPath>
@@ -34,6 +34,9 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>includes/packet</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="3">

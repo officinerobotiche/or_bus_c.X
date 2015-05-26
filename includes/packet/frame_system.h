@@ -5,8 +5,8 @@
  * Created on May 25, 2015, 4:38 PM
  */
 
-#ifndef FRAME_SYSTEM_H
-#define	FRAME_SYSTEM_H
+#ifndef FRAMESYSTEM_H
+#define	FRAMESYSTEM_H
 
 #ifdef	__cplusplus
 extern "C" {
@@ -127,5 +127,5 @@ typedef struct _system_task_name {
 }
 #endif
 
-#endif	/* FRAME_SYSTEM_H */
+#endif	/* FRAMESYSTEM_H */
 

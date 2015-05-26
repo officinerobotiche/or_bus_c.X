@@ -15,8 +15,8 @@
  * Public License for more details
 */
 
-#ifndef MOTION_H
-#define	MOTION_H
+#ifndef FRAMEMOTION_H
+#define	FRAMEMOTION_H
 
 #include <stdint.h>
 
@@ -34,13 +34,13 @@
  * - position [x, y, theta]
  * - space
  */
-typedef struct coordinate {
+typedef struct _coordinate {
     float x;
     float y;
     float theta;
     float space;
-} coordinate_t;
-#define LNG_COORDINATE sizeof(coordinate_t)
+} motion_coordinate_t;
+#define LNG_MOTION_COORDINATE sizeof(motion_coordinate_t)
 
 /**
  * Parameters definition for unicycle robot:
@@ -48,44 +48,44 @@ typedef struct coordinate {
  * - wheelbase
  * - minimal space for odometry
  */
-typedef struct parameter_unicycle {
+typedef struct _parameter_unicycle {
     float radius_r;
     float radius_l;
     float wheelbase;
     float sp_min;
-} parameter_unicycle_t;
-#define LNG_PARAMETER_UNICYCLE sizeof(parameter_unicycle_t)
+} motion_parameter_unicycle_t;
+#define LNG_MOTION_PARAMETER_UNICYCLE sizeof(motion_parameter_unicycle_t)
 
 /**
  * Message for read and write velocity in a unicycle robot:
  * - v = linear velocity
  * - w = angular velocity
  */
-typedef struct velocity {
+typedef struct _velocity {
     float v;
     float w;
-} velocity_t;
-#define LNG_VELOCITY sizeof(velocity_t)
+} motion_velocity_t;
+#define LNG_MOTION_VELOCITY sizeof(motion_velocity_t)
 
 /**
  * Message for read and write state high level control
  */
-typedef int8_t state_controller_t;
-#define LNG_ENABLE_MOTOR sizeof(state_controller_t)
+typedef int8_t motion_state_t;
+#define LNG_MOTION_STATE sizeof(motion_state_t)
 
 //Numbers associated for motion messages
-#define COORDINATE 0
-#define PARAMETER_UNICYCLE 1
-#define VELOCITY 2
-#define VELOCITY_MIS 3
-#define ENABLE 4
+#define MOTION_COORDINATE 0
+#define MOTION_VEL 1
+#define MOTION_PARAMETER_UNICYCLE 2
+#define MOTION_STATE 3
+#define MOTION_VEL_REF 4
 
 //List of all motion messages
-#define ABSTRACT_MESSAGE_MOTION                         \
-        coordinate_t motion_coordinate;                 \
-        parameter_unicycle_t motion_parameter_unicycle; \
-        velocity_t motion_velocity;                     \
-        state_controller_t motion_state;
+#define ABSTRACT_MESSAGE_MOTION                                \
+        motion_coordinate_t motion_coordinate;                 \
+        motion_parameter_unicycle_t motion_parameter_unicycle; \
+        motion_velocity_t motion_velocity;                     \
+        motion_state_t motion_state;
 
 //Name for HASHMAP with information about motion messages
 #define HASHMAP_MOTION 'M'
@@ -97,11 +97,11 @@ typedef int8_t state_controller_t;
 /**
  * Table with conversion number message in a length for data messages
  */
-#define HASHMAP_MOTION_INITIALIZE   hashmap_motion[COORDINATE] = LNG_COORDINATE;                   \
-                                    hashmap_motion[PARAMETER_UNICYCLE] = LNG_PARAMETER_UNICYCLE;   \
-                                    hashmap_motion[VELOCITY] = LNG_VELOCITY;                       \
-                                    hashmap_motion[ENABLE] = LNG_ENABLE_MOTOR;                     \
-                                    hashmap_motion[VELOCITY_MIS] = LNG_VELOCITY;
+#define HASHMAP_MOTION_INITIALIZE   hashmap_motion[MOTION_COORDINATE] = LNG_MOTION_COORDINATE;                   \
+                                    hashmap_motion[MOTION_PARAMETER_UNICYCLE] = LNG_MOTION_PARAMETER_UNICYCLE;   \
+                                    hashmap_motion[MOTION_VEL_REF] = LNG_MOTION_VELOCITY;                        \
+                                    hashmap_motion[MOTION_STATE] = LNG_MOTION_STATE;                            \
+                                    hashmap_motion[MOTION_VEL] = LNG_MOTION_VELOCITY;
                                     
-#endif	/* MOTION_H */
+#endif	/* FRAMEMOTION_H */
 

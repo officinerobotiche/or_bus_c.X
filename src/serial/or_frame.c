@@ -32,6 +32,7 @@
 static unsigned int hashmap_system[HASHMAP_SYSTEM_NUMBER];
 static unsigned int hashmap_motor[HASHMAP_MOTOR_NUMBER];
 static unsigned int hashmap_motion[HASHMAP_MOTION_NUMBER];
+static unsigned int hashmap_navigation[HASHMAP_NAVIGATION_NUMBER];
 
 typedef struct _frame_read {
     frame_reader_t send;
@@ -66,6 +67,7 @@ void init_hashmap_packet() {
     HASHMAP_SYSTEM_INITIALIZE
     HASHMAP_MOTOR_INITIALIZE
     HASHMAP_MOTION_INITIALIZE
+    HASHMAP_NAVIGATION_INITIALIZE
 }
 
 void set_frame_reader(unsigned char hashmap, frame_reader_t send, frame_reader_t receive) {
@@ -153,6 +155,9 @@ packet_information_t createPacket(unsigned char command, unsigned char option, u
                 break;
             case HASHMAP_MOTION:
                 information.length = LNG_HEAD_INFORMATION_PACKET + hashmap_motion[command];
+                break;
+            case HASHMAP_NAVIGATION:
+                information.length = LNG_HEAD_INFORMATION_PACKET + hashmap_navigation[command];
                 break;
             case HASHMAP_MOTOR:
                 command_motor.command_message = command;
