@@ -26,20 +26,26 @@
 #include "serial/or_frame.h"
 #include "serial/or_message.h"
 
-//Table to convertion name (number) of message in a length
-//See packet/packet.h and packet/unav.h
+#define HASHMAP_NUMBER 4
+
+//Table to convert name (number) of message in a length
 static unsigned int hashmap_system[HASHMAP_SYSTEM_NUMBER];
 static unsigned int hashmap_motor[HASHMAP_MOTOR_NUMBER];
 static unsigned int hashmap_motion[HASHMAP_MOTION_NUMBER];
 
 typedef struct _frame_read {
-    frame_reader frame;
-    unsigned char hashmap;
+    frame_reader_t send;
+    frame_reader_t receive;
 } frame_read_t;
 
-frame_read_t save_frame;
-frame_read_t send_frame;
-    
+typedef struct _hashmap {
+    frame_read_t reader;
+    unsigned char name;
+} hashmap;
+
+hashmap hash[HASHMAP_NUMBER];
+unsigned short counter = 0;
+
 /** GLOBAL VARIBLES */
 // From serial/serial.c
 extern system_error_serial_t serial_error;
@@ -50,24 +56,39 @@ extern char receive_header;
 /* Parsing functions                                                          */
 /******************************************************************************/
 
-void init_hashmap() {
-    save_frame.frame = NULL;
-    send_frame.frame = NULL;
+void init_hashmap_packet() {
+    unsigned short i;
+    for(i = 0; i < HASHMAP_NUMBER; ++i) {
+        hash[i].reader.send = NULL;
+        hash[i].reader.receive = NULL;
+        hash[i].name = 0;
+    }
     HASHMAP_SYSTEM_INITIALIZE
     HASHMAP_MOTOR_INITIALIZE
     HASHMAP_MOTION_INITIALIZE
 }
 
-void set_frame_data(unsigned char hashmap, frame_reader save_f) {
-    save_frame.frame = save_f;
-    save_frame.hashmap = hashmap;
+void set_frame_reader(unsigned char hashmap, frame_reader_t send, frame_reader_t receive) {
+    frame_read_t frame;
+    frame.send = send;
+    frame.receive = receive;
+    
+    hash[counter].name = hashmap;
+    hash[counter].reader = frame;
+    counter++;
 }
 
-void set_frame_request(unsigned char hashmap, frame_reader save_f) {
-    send_frame.frame = save_f;
-    send_frame.hashmap = hashmap;
+int get_key(unsigned char hashmap) {
+    int i;
+    for(i = 0; i < HASHMAP_NUMBER; ++i) {
+        if(hashmap == hash[i].name) {
+            return i;
+        }
+    }
+    return -1;
 }
 
+/* inline */
 bool parser(packet_information_t* list_to_send, unsigned short* len) {
     unsigned int i;
     packet_information_t list_data[BUFFER_LIST_PARSING];
@@ -79,17 +100,16 @@ bool parser(packet_information_t* list_to_send, unsigned short* len) {
     //Compute packet
     for (i = 0; i < counter; ++i) {
         packet_information_t* info = &list_data[i];
-        switch (info->option) {
-            case PACKET_DATA:
-                if(save_frame.hashmap == info->type) {
-                    save_frame.frame(&list_to_send[0], i, info);
-                }
-                break;
-            case PACKET_REQUEST:
-                if(save_frame.hashmap == info->type) {
-                    send_frame.frame(&list_to_send[0], i, info);
-                }
-                break;
+        int key = get_key(info->type);
+        if(key != -1) {
+            switch (info->option) {
+                case PACKET_DATA:
+                    hash[key].reader.receive(&list_to_send[0], i, info);
+                    break;
+                case PACKET_REQUEST:
+                    hash[key].reader.send(&list_to_send[0], i, info);
+                    break;
+            }
         }
     }
     return true;

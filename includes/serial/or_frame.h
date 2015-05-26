@@ -30,16 +30,14 @@ extern "C" {
     //Dimension of list messages to decode in a packet
     #define BUFFER_LIST_PARSING 10
 
-    typedef void (*frame_reader)(packet_information_t*, size_t, packet_information_t*);
+    typedef void (*frame_reader_t)(packet_information_t*, size_t, packet_information_t*);
     /**
      * Init hashmap for decode messages
      * Load all hashmaps from packet/packet.h and packet/unav.h
      */
-    void init_hashmap();
+    void init_hashmap_packet();
 
-    void set_frame_data(unsigned char hashmap, frame_reader save_f);
-
-    void set_frame_request(unsigned char hashmap, frame_reader save_f);
+    void set_frame_reader(unsigned char hash, frame_reader_t send, frame_reader_t receive);
 
     /**
      * In a packet we have more messages. A typical data packet
@@ -64,7 +62,7 @@ extern "C" {
      * *This function is a long function*
      * @return time to compute parsing packet
      */
-    bool parser(packet_information_t* list_to_send, unsigned short* len);
+    inline bool parser(packet_information_t* list_to_send, unsigned short* len);
 
     /**
      * Get a list of messages to transform in a packet for serial communication.
