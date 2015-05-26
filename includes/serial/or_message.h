@@ -15,8 +15,8 @@
  * Public License for more details
 */
 
-#ifndef SERIAL_H
-#define	SERIAL_H
+#ifndef OR_MESSAGE_H
+#define	OR_MESSAGE_H
 
 #ifdef	__cplusplus
 extern "C" {
@@ -126,4 +126,4 @@ extern "C" {
 }
 #endif
 
-#endif	/* SERIAL_H */
+#endif	/* OR_MESSAGE_H */

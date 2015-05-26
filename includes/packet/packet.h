@@ -37,17 +37,11 @@
  * Other messages for this board are in packet/unav.h
  */
 
-#define PACKETS_MOTION
-#define PACKETS_MOTOR
-
 /*******/
 
-#ifdef PACKETS_MOTION
 #include "packet/motion.h"
-#endif
-#ifdef PACKETS_MOTOR
-#include "packet/motor.h"
-#endif
+#include "packet/frame_motor.h"
+
 #ifdef PACKETS_NAVIGATION
 #include "packet/navigation.h"
 #endif
@@ -160,12 +154,8 @@ typedef union _message_abstract {
     system_service_t system_service;
     system_error_serial_t system_error_serial;
     system_parameter_t system_parameter;
-#ifdef PACKETS_MOTION
     ABSTRACT_MESSAGE_MOTOR
-#endif
-#ifdef PACKETS_MOTOR
     ABSTRACT_MESSAGE_MOTION
-#endif
 #ifdef PACKETS_NAVIGATION
     ABSTRACT_MESSAGE_NAVIGATION
 #endif

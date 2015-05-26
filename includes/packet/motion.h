@@ -97,7 +97,7 @@ typedef int8_t state_controller_t;
 /**
  * Table with conversion number message in a length for data messages
  */
-#define INITIALIZE_HASHMAP_MOTION   hashmap_motion[COORDINATE] = LNG_COORDINATE;                   \
+#define HASHMAP_MOTION_INITIALIZE   hashmap_motion[COORDINATE] = LNG_COORDINATE;                   \
                                     hashmap_motion[PARAMETER_UNICYCLE] = LNG_PARAMETER_UNICYCLE;   \
                                     hashmap_motion[VELOCITY] = LNG_VELOCITY;                       \
                                     hashmap_motion[ENABLE] = LNG_ENABLE_MOTOR;                     \

@@ -19,23 +19,12 @@
 /* Files to Include                                                           */
 /******************************************************************************/
 
-/* Device header file */
-#if defined(__XC16__)
-#include <xc.h>
-#elif defined(__C30__)
-#if defined(__dsPIC33E__)
-#include <p33Exxxx.h>
-#elif defined(__dsPIC33F__)
-#include <p33Fxxxx.h>
-#endif
-#endif
-
 #include <stdint.h>        /* Includes uint16_t definition   */
 #include <stdbool.h>       /* Includes true/false definition */
 #include <string.h>
 
-#include "serial/frame.h"
-#include "serial/message.h"
+#include "serial/or_frame.h"
+#include "serial/or_message.h"
 
 //Table to convertion name (number) of message in a length
 //See packet/packet.h and packet/unav.h
@@ -43,9 +32,14 @@ static unsigned int hashmap_system[HASHMAP_SYSTEM_NUMBER];
 static unsigned int hashmap_motor[HASHMAP_MOTOR_NUMBER];
 static unsigned int hashmap_motion[HASHMAP_MOTION_NUMBER];
 
-frame_reader save_frame = NULL;
-frame_reader send_frame = NULL;
+typedef struct _frame_read {
+    frame_reader frame;
+    unsigned char hashmap;
+} frame_read_t;
 
+frame_read_t save_frame;
+frame_read_t send_frame;
+    
 /** GLOBAL VARIBLES */
 // From serial/serial.c
 extern system_error_serial_t serial_error;
@@ -57,24 +51,27 @@ extern char receive_header;
 /******************************************************************************/
 
 void init_hashmap() {
+    save_frame.frame = NULL;
+    send_frame.frame = NULL;
     HASHMAP_SYSTEM_INITIALIZE
     HASHMAP_MOTOR_INITIALIZE
-    INITIALIZE_HASHMAP_MOTION
+    HASHMAP_MOTION_INITIALIZE
 }
 
-void set_frame_save(frame_reader save_f) {
-    save_frame = save_f;
+void set_frame_data(unsigned char hashmap, frame_reader save_f) {
+    save_frame.frame = save_f;
+    save_frame.hashmap = hashmap;
 }
 
-void set_frame_send(frame_reader save_f) {
-    save_frame = save_f;
+void set_frame_request(unsigned char hashmap, frame_reader save_f) {
+    send_frame.frame = save_f;
+    send_frame.hashmap = hashmap;
 }
 
-int parser() {
-    int i;
-    unsigned int t = TMR1; // Timing function
+bool parser(packet_information_t* list_to_send, unsigned short* len) {
+    unsigned int i;
     packet_information_t list_data[BUFFER_LIST_PARSING];
-    unsigned int counter = 0;
+    unsigned short counter = 0;
     //Save single packet
     for (i = 0; i < receive_pkg.length; i += receive_pkg.buffer[i]) {
         memcpy((unsigned char*) &list_data[counter++], &receive_pkg.buffer[i], receive_pkg.buffer[i]);
@@ -84,14 +81,18 @@ int parser() {
         packet_information_t* info = &list_data[i];
         switch (info->option) {
             case PACKET_DATA:
-                save_frame(&list_data[0], i, info);
+                if(save_frame.hashmap == info->type) {
+                    save_frame.frame(&list_to_send[0], i, info);
+                }
                 break;
             case PACKET_REQUEST:
-                send_frame(&list_data[0], i, info);
+                if(save_frame.hashmap == info->type) {
+                    send_frame.frame(&list_to_send[0], i, info);
+                }
                 break;
         }
     }
-    return TMR1 - t; // Time of execution
+    return true;
 }
 
 packet_t encoder(packet_information_t *list_send, size_t len) {

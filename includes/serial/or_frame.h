@@ -15,29 +15,31 @@
  * Public License for more details
 */
 
-#ifndef PARSING_MESSAGES_H
-#define	PARSING_MESSAGES_H
+#ifndef OR_FRAME_H
+#define	OR_FRAME_H
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-    #include "packet/packet.h"
-
+#include "packet/packet.h"
+#include <stdint.h>          /* For uint16_t definition                       */
+#include <stdbool.h>         /* For true/false definition                     */
+#include <string.h>
+    
     //Dimension of list messages to decode in a packet
     #define BUFFER_LIST_PARSING 10
 
-    typedef void (*frame_reader) (packet_information_t* list_send, size_t len, packet_information_t* info);
-
+    typedef void (*frame_reader)(packet_information_t*, size_t, packet_information_t*);
     /**
      * Init hashmap for decode messages
      * Load all hashmaps from packet/packet.h and packet/unav.h
      */
     void init_hashmap();
 
-    void set_frame_save(frame_reader save_f);
+    void set_frame_data(unsigned char hashmap, frame_reader save_f);
 
-    void set_frame_send(frame_reader save_f);
+    void set_frame_request(unsigned char hashmap, frame_reader save_f);
 
     /**
      * In a packet we have more messages. A typical data packet
@@ -46,7 +48,7 @@ extern "C" {
      * | Length | CMD | DATA ... | Length | CMD | INFORMATION |Length | CMD | ... ... |
      * -------------------------- ---------------------------- -----------------------
      *    1        2 -> length    length+1 length+2 length+3   ...
-     * It is possibile to have different type of messages:
+     * It is possible to have different type of messages:
      * * Message with data (D)
      * * Message witn state information:
      *      * (R) request data
@@ -62,12 +64,12 @@ extern "C" {
      * *This function is a long function*
      * @return time to compute parsing packet
      */
-    int parser();
+    bool parser(packet_information_t* list_to_send, unsigned short* len);
 
     /**
      * Get a list of messages to transform in a packet for serial communication.
      * This function create a new packet and copy with UNION buffer_packet_u and
-     * finally put chars convertion in to buffer.
+     * finally put chars conversion in to buffer.
      * @param list_send pointer of list with messages to send
      * @param len length of list_send list
      * @return a packet_t with all data to send
@@ -108,4 +110,4 @@ extern "C" {
 }
 #endif
 
-#endif	/* PARSING_MESSAGES_H */
+#endif	/* OR_FRAME_H */
