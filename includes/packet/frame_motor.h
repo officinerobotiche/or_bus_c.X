@@ -165,46 +165,48 @@ typedef struct _motor_pid {
 } motor_pid_t;
 #define LNG_MOTOR_PID sizeof(motor_pid_t)
 
-//List of all motor messages
-#define ABSTRACT_MESSAGE_MOTOR                             \
-        motor_t motor;                                     \
-        motor_diagnostic_t motor_diagnostic;               \
-        motor_parameter_t motor_parameter;                 \
-        motor_parameter_encoder_t motor_parameter_encoder; \
-        motor_parameter_bridge_t motor_parameter_bridge;   \
-        motor_state_t motor_state;                         \
-        motor_emergency_t motor_emergency;                 \
-        motor_pid_t motor_pid;                             \
-        motor_control_t motor_control;
+/**
+ * List of all motor messages
+ */
+typedef union _motor_frame {
+    motor_t motor;
+    motor_diagnostic_t diagnostic;
+    motor_parameter_t parameter;
+    motor_parameter_encoder_t parameter_encoder;
+    motor_parameter_bridge_t parameter_bridge;
+    motor_state_t state;
+    motor_emergency_t emergency;
+    motor_pid_t pid;
+    motor_control_t reference;
+} motor_frame_u;
 
 //Numbers associated for motor messages to be used in the structure @ref motor_command_map_t as value for @ref command
-#define MOTOR                     0 ///< TODO Explain what this means
-#define MOTOR_DIAGNOSTIC          1 ///< TODO Explain what this means
-#define MOTOR_PARAMETER           2 ///< TODO Explain what this means
-#define MOTOR_PARAMETER_ENCODER   3 ///< TODO Explain what this means
-#define MOTOR_PARAMETER_BRIDGE    4 ///< TODO Explain what this means
-#define MOTOR_CONSTRAINT          5 ///< TODO Explain what this means
-#define MOTOR_EMERGENCY           6 ///< TODO Explain what this means
-#define MOTOR_STATE               7 ///< TODO Explain what this means
-#define MOTOR_POS_RESET           8 ///< TODO Explain what this means
-#define MOTOR_POS_PID             9 ///< TODO Explain what this means
-#define MOTOR_POS_REF            10 ///< TODO Explain what this means
-#define MOTOR_VEL_PID            11 ///< TODO Explain what this means
-#define MOTOR_VEL_REF            12 ///< TODO Explain what this means
-#define MOTOR_TORQUE_PID         13 ///< TODO Explain what this means
-#define MOTOR_TORQUE_REF         14 ///< TODO Explain what this means
+#define MOTOR_MEASURE             0 ///< TODO Explain what this means
+#define MOTOR_REFERENCE           1 ///< TODO Explain what this means
+#define MOTOR_DIAGNOSTIC          2 ///< TODO Explain what this means
+#define MOTOR_PARAMETER           3 ///< TODO Explain what this means
+#define MOTOR_PARAMETER_ENCODER   4 ///< TODO Explain what this means
+#define MOTOR_PARAMETER_BRIDGE    5 ///< TODO Explain what this means
+#define MOTOR_CONSTRAINT          6 ///< TODO Explain what this means
+#define MOTOR_EMERGENCY           7 ///< TODO Explain what this means
+#define MOTOR_STATE               8 ///< TODO Explain what this means
+#define MOTOR_POS_RESET           9 ///< TODO Explain what this means
+#define MOTOR_POS_PID            10 ///< TODO Explain what this means
+#define MOTOR_POS_REF            11 ///< TODO Explain what this means
+#define MOTOR_VEL_PID            12 ///< TODO Explain what this means
+#define MOTOR_VEL_REF            13 ///< TODO Explain what this means
+#define MOTOR_TORQUE_PID         14 ///< TODO Explain what this means
+#define MOTOR_TORQUE_REF         15 ///< TODO Explain what this means
 
 //Name for HASHMAP with information about motion messages
 #define HASHMAP_MOTOR 'G'
 #define HASHMAP_MOTOR_NUMBER 16
 
-// Definition on communication/parsing_packet.c
-//static unsigned int hashmap_motor[HASHMAP_MOTOR_NUMBER];
-
 /**
  * Table with conversion number message in a length for data messages
  */
-#define HASHMAP_MOTOR_INITIALIZE    hashmap_motor[MOTOR] = LNG_MOTOR;                                     \
+#define HASHMAP_MOTOR_INITIALIZE    hashmap_motor[MOTOR_MEASURE] = LNG_MOTOR;                             \
+                                    hashmap_motor[MOTOR_REFERENCE] = LNG_MOTOR;                           \
                                     hashmap_motor[MOTOR_DIAGNOSTIC] = LNG_MOTOR_PARAMETER;                \
                                     hashmap_motor[MOTOR_PARAMETER] = LNG_MOTOR_PARAMETER;                 \
                                     hashmap_motor[MOTOR_PARAMETER_ENCODER] = LNG_MOTOR_PARAMETER_ENCODER; \

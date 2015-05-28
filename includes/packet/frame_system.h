@@ -1,8 +1,18 @@
-/* 
- * File:   system.h
- * Author: Raffaello
+/*
+ * Copyright (C) 2015 Officine Robotiche
+ * Author: Raffaello Bonghi
+ * email:  raffaello.bonghi@officinerobotiche.it
+ * Permission is granted to copy, distribute, and/or modify this program
+ * under the terms of the GNU Lesser General Public License, version 2 or any
+ * later version published by the Free Software Foundation.
  *
- * Created on May 25, 2015, 4:38 PM
+ * A copy of the license can be found at
+ * https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Public License for more details
  */
 
 #ifndef FRAMESYSTEM_H
@@ -79,12 +89,16 @@ typedef struct _system_task_name {
 } system_task_name_t;
 #define LNG_SYSTEM_TASK_NAME sizeof(system_task_name_t)
 
-//List of all system messages
-#define ABSTRACT_MESSAGE_SYSTEM system_task_name_t system_task_name;          \
-                                system_task_t system_task;                    \
-                                system_service_t system_service;              \
-                                system_error_serial_t system_error_serial;    \
-                                system_parameter_t system_parameter;
+/**
+ * List of all system messages
+ */
+typedef union _system_frame {
+    system_task_name_t task_name;
+    system_task_t task;
+    system_service_t service;
+    system_error_serial_t error_serial;
+    system_parameter_t parameter;
+} system_frame_u;
 
 //Number association for standard messages
 #define SYSTEM_SERVICE          0
@@ -107,9 +121,6 @@ typedef struct _system_task_name {
 //Name for HASHMAP with information about standard messages
 #define HASHMAP_SYSTEM          'S'
 #define HASHMAP_SYSTEM_NUMBER   10
-
-// Definition on communication/parsing_packet.c
-//static unsigned int hashmap_system[HASHMAP_SYSTEM_NUMBER];
 
 /**
  * Table with conversion number message in a length for data messages

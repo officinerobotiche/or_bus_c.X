@@ -58,15 +58,20 @@ typedef struct _autosend {
 typedef uint8_t sensor_enable_t;
 #define LNG_SENSOR_ENABLE sizeof(sensor_enable_t)
 
-#define ABSTRACT_MESSAGE_NAVIGATION             \
-        sensor_t sensor;                        \
-        sensor_humidity_t sensor_humidity;      \
-        sensor_infrared_t sensor_infrared;      \
-        sensor_parameter_t sensor_parameter;    \
-        sensor_autosend_t sensor_autosend;      \
-        sensor_enable_t sensor_enable;          \
 
+/**
+ * List of all navigation messages
+ */
+typedef union _navigation_frame {
+    sensor_t sensor;
+    sensor_humidity_t humidity;
+    sensor_infrared_t infrared;
+    sensor_parameter_t parameter;
+    sensor_autosend_t autosend;
+    sensor_enable_t enable;
+} navigation_frame_u;
 
+//Number association for standard messages
 #define SENSOR 0
 #define SENSOR_INFRARED 1
 #define SENSOR_HUMIDITY 2
@@ -74,10 +79,13 @@ typedef uint8_t sensor_enable_t;
 #define SENSOR_AUTOSEND 4
 #define SENSOR_ENABLE 5
 
+//Name for HASHMAP with information about standard messages
 #define HASHMAP_NAVIGATION 'N'
 #define HASHMAP_NAVIGATION_NUMBER 16
-//static unsigned int hashmap_navigation[HASHMAP_NAVIGATION_NUMBER];
 
+/**
+ * Table with conversion number message in a length for data messages
+ */
 #define HASHMAP_NAVIGATION_INITIALIZE hashmap_navigation[SENSOR] = LNG_SENSOR;                     \
                                       hashmap_navigation[SENSOR_INFRARED] = LNG_SENSOR_INFRARED;   \
                                       hashmap_navigation[SENSOR_HUMIDITY] = LNG_SENSOR_HUMIDITY;   \
@@ -90,4 +98,3 @@ typedef uint8_t sensor_enable_t;
 #endif
 
 #endif	/* FRAMENAVIGATION_H */
-

@@ -79,10 +79,10 @@
  * Union for conversion all type of packets in a standard packets
  */
 typedef union _message_abstract {
-    ABSTRACT_MESSAGE_SYSTEM
-    ABSTRACT_MESSAGE_MOTOR
-    ABSTRACT_MESSAGE_MOTION
-    ABSTRACT_MESSAGE_NAVIGATION
+    system_frame_u system;
+    motor_frame_u motor;
+    motion_frame_u motion;
+    navigation_frame_u sensor;
 } message_abstract_u;
 
 /**
