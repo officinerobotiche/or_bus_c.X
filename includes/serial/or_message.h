@@ -66,7 +66,7 @@ extern "C" {
      * @param rxchar char character received from interrupt
      * @return boolean result from pointer function called on decode
      */
-    void build_pkg(unsigned char * BufferTx, char header, packet_t packet);
+    void build_pkg(unsigned char * BufferTx, packet_t packet);
 
     /**
      * First function to decode Header from Serial interrupt

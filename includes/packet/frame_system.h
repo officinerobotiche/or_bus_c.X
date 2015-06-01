@@ -31,8 +31,8 @@ extern "C" {
 
 /**
  * Define messages about parameter system:
-     * * Clock of System timer
-     * * Clock in milliseconds
+ * * Clock of System timer
+ * * Clock in milliseconds
  */
 typedef struct _system_parameter {
     int16_t step_timer;

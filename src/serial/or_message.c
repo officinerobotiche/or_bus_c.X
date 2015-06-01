@@ -37,6 +37,8 @@ char receive_header;
 unsigned int index_data = 0;
 system_error_serial_t serial_error;
 
+unsigned char header = HEADER_SYNC;
+
 /******************************************************************************/
 /* Communication Functions                                                    */
 /******************************************************************************/
@@ -103,7 +105,7 @@ unsigned char pkg_checksum(volatile unsigned char* Buffer, int FirstIndx, int La
     return ChkSum;
 }
 
-void build_pkg(unsigned char * BufferTx, char header, packet_t packet) {
+void build_pkg(unsigned char * BufferTx, packet_t packet) {
 
     int i;
     BufferTx[0] = header;
