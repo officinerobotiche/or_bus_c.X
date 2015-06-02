@@ -35,8 +35,8 @@ extern "C" {
  * * Clock in milliseconds
  */
 typedef struct _system_parameter {
-    int16_t step_timer;
-    int16_t int_tm_mill;
+    uint16_t FREQ_CPU;
+    uint16_t FREQ_SYSTEM;
 } system_parameter_t;
 #define LNG_SYSTEM_PARAMETER sizeof(system_parameter_t)
 
