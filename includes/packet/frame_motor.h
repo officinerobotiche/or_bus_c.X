@@ -20,6 +20,9 @@
 
 #include <stdint.h>
 
+//Name for HASHMAP with information about motion messages
+#define HASHMAP_MOTOR 'G'
+
 /**
  * Define to select state of control for single motor
  */
@@ -197,29 +200,5 @@ typedef union _motor_frame {
 #define MOTOR_VEL_REF            13 ///< TODO Explain what this means
 #define MOTOR_TORQUE_PID         14 ///< TODO Explain what this means
 #define MOTOR_TORQUE_REF         15 ///< TODO Explain what this means
-
-//Name for HASHMAP with information about motion messages
-#define HASHMAP_MOTOR 'G'
-#define HASHMAP_MOTOR_NUMBER 16
-
-/**
- * Table with conversion number message in a length for data messages
- */
-#define HASHMAP_MOTOR_INITIALIZE    hashmap_motor[MOTOR_MEASURE] = LNG_MOTOR;                             \
-                                    hashmap_motor[MOTOR_REFERENCE] = LNG_MOTOR;                           \
-                                    hashmap_motor[MOTOR_DIAGNOSTIC] = LNG_MOTOR_PARAMETER;                \
-                                    hashmap_motor[MOTOR_PARAMETER] = LNG_MOTOR_PARAMETER;                 \
-                                    hashmap_motor[MOTOR_PARAMETER_ENCODER] = LNG_MOTOR_PARAMETER_ENCODER; \
-                                    hashmap_motor[MOTOR_PARAMETER_BRIDGE] = LNG_MOTOR_PARAMETER_BRIDGE;   \
-                                    hashmap_motor[MOTOR_CONSTRAINT] = LNG_MOTOR;                          \
-                                    hashmap_motor[MOTOR_EMERGENCY] = LNG_MOTOR_EMERGENCY;                 \
-                                    hashmap_motor[MOTOR_STATE] = LNG_MOTOR_STATE;                         \
-                                    hashmap_motor[MOTOR_POS_RESET] = LNG_MOTOR_CONTROL;                   \
-                                    hashmap_motor[MOTOR_POS_PID] = LNG_MOTOR_PID;                         \
-                                    hashmap_motor[MOTOR_POS_REF] = LNG_MOTOR_CONTROL;                     \
-                                    hashmap_motor[MOTOR_VEL_PID] = LNG_MOTOR_PID;                         \
-                                    hashmap_motor[MOTOR_VEL_REF] = LNG_MOTOR_CONTROL;                     \
-                                    hashmap_motor[MOTOR_TORQUE_PID] = LNG_MOTOR_PID;                      \
-                                    hashmap_motor[MOTOR_TORQUE_REF] = LNG_MOTOR_CONTROL;
 
 #endif	/* FRAMEMOTOR_H */

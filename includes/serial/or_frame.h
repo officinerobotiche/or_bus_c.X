@@ -27,10 +27,22 @@ extern "C" {
 #include <stdbool.h>         /* For true/false definition                     */
 #include <string.h>
     
-    //Dimension of list messages to decode in a packet
+/******************************************************************************/
+/* System Level #define Macros                                                */
+/******************************************************************************/
+    // Dimension of list messages to decode in a packet
     #define BUFFER_LIST_PARSING 10
-
+    /// function to decode packet
     typedef void (*frame_reader_t)(packet_information_t*, size_t*, packet_information_t*);
+    
+    #define CREATE_PACKET_DATA(cmd, type, data) createPacket((cmd), PACKET_DATA, (type), &(data), sizeof(data))
+    #define CREATE_PACKET_RESPONSE(cmd, type, x) createPacket((cmd), (x), (type), NULL, 0)
+    #define CREATE_PACKET_ACK(cmd,type) CREATE_PACKET_RESPONSE(cmd, type, PACKET_ACK)
+    #define CREATE_PACKET_NACK(cmd,type) CREATE_PACKET_RESPONSE(cmd, type, PACKET_NACK)
+
+/******************************************************************************/
+/* System Function Prototypes                                                 */
+/******************************************************************************/
     /**
      * Init hashmap for decode messages
      * Load all hashmaps from packet/packet.h and packet/unav.h
@@ -90,19 +102,20 @@ extern "C" {
      * @param option information about this message
      * @param type type of message
      * @param packet abstract_message to convert in a information_packet
+     * @param size of packet
      * @return information_packet ready to send
      */
-    inline packet_information_t createPacket(unsigned char command, unsigned char option, unsigned char type, message_abstract_u * packet);
-    
+    inline packet_information_t createPacket(unsigned char command, unsigned char option, unsigned char type, message_abstract_u * packet, size_t len);
     /**
      * Create an information packet for a message with data (D).
      * This function use createPacket for create information_packet
      * @param command information about this message
      * @param type type of command to send
      * @param packet abstract_message to convert in a information_packet
+     * @param size of packet
      * @return information_packet ready to send
      */
-    inline packet_information_t createDataPacket(unsigned char command, unsigned char type, message_abstract_u * packet);
+    inline packet_information_t createDataPacket(unsigned char command, unsigned char type, message_abstract_u * packet, size_t len);
 
 #ifdef	__cplusplus
 }
