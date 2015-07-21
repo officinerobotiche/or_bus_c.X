@@ -35,8 +35,8 @@ extern "C" {
  * * Clock in milliseconds
  */
 typedef struct _system_parameter {
-    uint16_t FREQ_CPU;
-    uint16_t FREQ_SYSTEM;
+    uint32_t FREQ_CPU;
+    uint32_t FREQ_SYSTEM;
 } system_parameter_t;
 #define LNG_SYSTEM_PARAMETER sizeof(system_parameter_t)
 
