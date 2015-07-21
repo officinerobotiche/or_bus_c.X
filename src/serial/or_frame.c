@@ -82,7 +82,6 @@ int get_key(unsigned char hashmap) {
 
 inline bool parser(packet_information_t* list_to_send, size_t* len) {
     unsigned int i;
-    //Save single packet
     for (i = 0; i < receive_pkg.length; i += receive_pkg.buffer[i]) {
         packet_information_t info;
         memcpy((unsigned char*) &info, &receive_pkg.buffer[i], receive_pkg.buffer[i]);
