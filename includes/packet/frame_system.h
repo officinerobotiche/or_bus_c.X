@@ -23,7 +23,7 @@ extern "C" {
 #endif
     
 //Name for HASHMAP with information about standard messages
-#define HASHMAP_SYSTEM          'S'
+#define HASHMAP_SYSTEM          0
     
 // Type of serial errors
 #define MAX_BUFF_ERROR_SERIAL 13

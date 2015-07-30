@@ -21,8 +21,7 @@
 #include <stdint.h>
 
 //Name for HASHMAP with information about motion messages
-#define HASHMAP_MOTOR 'G'
-
+#define HASHMAP_MOTOR 1
 /**
  * Define to select state of control for single motor
  */

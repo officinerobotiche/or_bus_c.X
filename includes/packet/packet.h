@@ -68,6 +68,20 @@
 #define LNG_HEAD_INFORMATION_PACKET 4
 
 /**
+ * This union collect number message and hash map packet
+ * - [#] maximum frames 2^5 = 32
+ * - [#] maximum command 2^3 = 8
+ */
+typedef union _frame_message_info {
+
+    struct {
+        unsigned char number : 5;    ///< Number packet
+        unsigned char command : 3;  ///< Hash map
+    } bitset;
+    unsigned char message;
+} frame_message_info_t;
+#define PACKET_MAX_HASHMAPS 8
+/**
  * This is a definition to convert packets in a big data packet to send in 
  * a serial communication. 
  * For all packet we have this transformation:
@@ -107,7 +121,7 @@ typedef struct _packet_information {
     unsigned char length;
     unsigned char option;
     unsigned char type;
-    unsigned char command;
+    frame_message_info_t command;
     message_abstract_u message;
 } packet_information_t;
 

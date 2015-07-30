@@ -99,23 +99,25 @@ extern "C" {
      * abstract_message_t (see packet/packet.h for all listed messages).
      * Finally add information about message.
      * @param command type of message to send
+     * @param number number message
      * @param option information about this message
      * @param type type of message
      * @param packet abstract_message to convert in a information_packet
      * @param size of packet
      * @return information_packet ready to send
      */
-    inline packet_information_t createPacket(unsigned char command, unsigned char option, unsigned char type, message_abstract_u * packet, size_t len);
+    inline packet_information_t createPacket(unsigned char command, unsigned int number, unsigned char option, unsigned char type, message_abstract_u * packet, size_t len);
     /**
      * Create an information packet for a message with data (D).
      * This function use createPacket for create information_packet
      * @param command information about this message
+     * @param number number message
      * @param type type of command to send
      * @param packet abstract_message to convert in a information_packet
      * @param size of packet
      * @return information_packet ready to send
      */
-    inline packet_information_t createDataPacket(unsigned char command, unsigned char type, message_abstract_u * packet, size_t len);
+    inline packet_information_t createDataPacket(unsigned char command, unsigned int number, unsigned char type, message_abstract_u * packet, size_t len);
 
 #ifdef	__cplusplus
 }

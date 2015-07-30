@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 //Name for HASHMAP with information about standard messages
-#define HASHMAP_NAVIGATION 'N'
+#define HASHMAP_NAVIGATION 3
     
 #define SENSOR_NUMBER_INFRARED 7
 #define SENSOR_BUFFER_AUTOSEND 10

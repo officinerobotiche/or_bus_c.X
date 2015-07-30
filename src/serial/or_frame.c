@@ -38,7 +38,7 @@ typedef struct _hashmap {
     unsigned char name;
 } hashmap;
 
-hashmap hash[HASHMAP_NUMBER];
+hashmap hash[PACKET_MAX_HASHMAPS];
 unsigned short counter = 0;
 
 /******************************************************************************/
@@ -64,31 +64,21 @@ void set_frame_reader(unsigned char hashmap, frame_reader_t send, frame_reader_t
     counter++;
 }
 
-int get_key(unsigned char hashmap) {
-    int i;
-    for(i = 0; i < HASHMAP_NUMBER; ++i) {
-        if(hashmap == hash[i].name) {
-            return i;
-        }
-    }
-    return -1;
-}
-
 inline bool parser(packet_t* receive_pkg, packet_information_t* list_to_send, size_t* len) {
     unsigned int i;
     for (i = 0; i < receive_pkg->length; i += receive_pkg->buffer[i]) {
         packet_information_t info;
         memcpy((unsigned char*) &info, &receive_pkg->buffer[i], receive_pkg->buffer[i]);
-        int key = get_key(info.type);
-        if(key != -1) {
+        if(info.type < 0 || info.type > PACKET_MAX_HASHMAPS) {
             switch (info.option) {
                 case PACKET_DATA:
-                    hash[key].reader.receive(&list_to_send[0], len, &info);
+                    hash[info.type].reader.receive(&list_to_send[0], len, &info);
                     break;
                 case PACKET_REQUEST:
-                    hash[key].reader.send(&list_to_send[0], len, &info);
+                    hash[info.type].reader.send(&list_to_send[0], len, &info);
                     break;
             }
+            list_to_send->command.bitset.number = info.command.bitset.number;
         }
     }
     return true;
@@ -118,9 +108,10 @@ packet_t encoderSingle(packet_information_t send) {
     return packet_send;
 }
 
-inline packet_information_t createPacket(unsigned char command, unsigned char option, unsigned char type, message_abstract_u * packet, size_t len) {
+inline packet_information_t createPacket(unsigned char command, unsigned int number, unsigned char option, unsigned char type, message_abstract_u * packet, size_t len) {
     packet_information_t information;
-    information.command = command;
+    information.command.bitset.number = number;
+    information.command.bitset.command = command;
     information.option = option;
     information.type = type;
     information.length = LNG_HEAD_INFORMATION_PACKET + len;
@@ -130,6 +121,6 @@ inline packet_information_t createPacket(unsigned char command, unsigned char op
     return information;
 }
 
-inline packet_information_t createDataPacket(unsigned char command, unsigned char type, message_abstract_u * packet, size_t len) {
-    return createPacket(command, PACKET_DATA, type, packet, len);
+inline packet_information_t createDataPacket(unsigned char command, unsigned int number, unsigned char type, message_abstract_u * packet, size_t len) {
+    return createPacket(command, number, PACKET_DATA, type, packet, len);
 }

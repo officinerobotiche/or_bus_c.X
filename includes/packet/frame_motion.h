@@ -21,7 +21,7 @@
 #include <stdint.h>
 
 //Name for HASHMAP with information about motion messages
-#define HASHMAP_MOTION 'M'
+#define HASHMAP_MOTION 2
 
 /**
  * Define to select high state of control
