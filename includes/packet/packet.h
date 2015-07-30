@@ -44,6 +44,11 @@
 #include "packet/frame_system.h"
 #include "packet/frame_navigation.h"
 
+/// Header packet
+#define PACKET_HEADER '#'
+/// Length header
+#define LNG_PACKET_HEADER 2
+
 /** Buffer dimensions */
 // Dimension for UART transmit buffer
 #define MAX_BUFF_TX 200

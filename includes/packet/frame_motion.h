@@ -20,7 +20,8 @@
 
 #include <stdint.h>
 
-//+++++++++ NAVIGATION CONTROL ++++++++++++//
+//Name for HASHMAP with information about motion messages
+#define HASHMAP_MOTION 'M'
 
 /**
  * Define to select high state of control
@@ -88,22 +89,6 @@ typedef union _motion_frame {
 #define MOTION_PARAMETER_UNICYCLE 2
 #define MOTION_STATE 3
 #define MOTION_VEL_REF 4
-
-//Name for HASHMAP with information about motion messages
-#define HASHMAP_MOTION 'M'
-#define HASHMAP_MOTION_NUMBER 10
-
-// Definition on communication/parsing_packet.c
-//static unsigned int hashmap_motion[HASHMAP_MOTION_NUMBER];
-
-/**
- * Table with conversion number message in a length for data messages
- */
-#define HASHMAP_MOTION_INITIALIZE   hashmap_motion[MOTION_COORDINATE] = LNG_MOTION_COORDINATE;                   \
-                                    hashmap_motion[MOTION_PARAMETER_UNICYCLE] = LNG_MOTION_PARAMETER_UNICYCLE;   \
-                                    hashmap_motion[MOTION_VEL_REF] = LNG_MOTION_VELOCITY;                        \
-                                    hashmap_motion[MOTION_STATE] = LNG_MOTION_STATE;                             \
-                                    hashmap_motion[MOTION_VEL] = LNG_MOTION_VELOCITY;
                                     
 #endif	/* FRAMEMOTION_H */
 

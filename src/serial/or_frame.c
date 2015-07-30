@@ -28,12 +28,6 @@
 
 #define HASHMAP_NUMBER 4
 
-//Table to convert name (number) of message in a length
-static unsigned int hashmap_system[HASHMAP_SYSTEM_NUMBER];
-static unsigned int hashmap_motor[HASHMAP_MOTOR_NUMBER];
-static unsigned int hashmap_motion[HASHMAP_MOTION_NUMBER];
-static unsigned int hashmap_navigation[HASHMAP_NAVIGATION_NUMBER];
-
 typedef struct _frame_read {
     frame_reader_t send;
     frame_reader_t receive;
@@ -47,27 +41,17 @@ typedef struct _hashmap {
 hashmap hash[HASHMAP_NUMBER];
 unsigned short counter = 0;
 
-/** GLOBAL VARIBLES */
-// From serial/serial.c
-extern system_error_serial_t serial_error;
-extern packet_t receive_pkg;
-extern char receive_header;
-
 /******************************************************************************/
 /* Parsing functions                                                          */
 /******************************************************************************/
 
-void init_hashmap_packet() {
+void orb_frame_init() {
     unsigned short i;
     for(i = 0; i < HASHMAP_NUMBER; ++i) {
         hash[i].reader.send = NULL;
         hash[i].reader.receive = NULL;
         hash[i].name = 0;
     }
-    HASHMAP_SYSTEM_INITIALIZE
-    HASHMAP_MOTOR_INITIALIZE
-    HASHMAP_MOTION_INITIALIZE
-    HASHMAP_NAVIGATION_INITIALIZE
 }
 
 void set_frame_reader(unsigned char hashmap, frame_reader_t send, frame_reader_t receive) {
@@ -90,26 +74,19 @@ int get_key(unsigned char hashmap) {
     return -1;
 }
 
-/* inline */
-bool parser(packet_information_t* list_to_send, size_t* len) {
+inline bool parser(packet_t* receive_pkg, packet_information_t* list_to_send, size_t* len) {
     unsigned int i;
-    packet_information_t list_data[BUFFER_LIST_PARSING];
-    unsigned short counter = 0;
-    //Save single packet
-    for (i = 0; i < receive_pkg.length; i += receive_pkg.buffer[i]) {
-        memcpy((unsigned char*) &list_data[counter++], &receive_pkg.buffer[i], receive_pkg.buffer[i]);
-    }
-    //Compute packet
-    for (i = 0; i < counter; ++i) {
-        packet_information_t* info = &list_data[i];
-        int key = get_key(info->type);
+    for (i = 0; i < receive_pkg->length; i += receive_pkg->buffer[i]) {
+        packet_information_t info;
+        memcpy((unsigned char*) &info, &receive_pkg->buffer[i], receive_pkg->buffer[i]);
+        int key = get_key(info.type);
         if(key != -1) {
-            switch (info->option) {
+            switch (info.option) {
                 case PACKET_DATA:
-                    hash[key].reader.receive(&list_to_send[0], len, info);
+                    hash[key].reader.receive(&list_to_send[0], len, &info);
                     break;
                 case PACKET_REQUEST:
-                    hash[key].reader.send(&list_to_send[0], len, info);
+                    hash[key].reader.send(&list_to_send[0], len, &info);
                     break;
             }
         }
@@ -141,42 +118,18 @@ packet_t encoderSingle(packet_information_t send) {
     return packet_send;
 }
 
-/* inline */
-packet_information_t createPacket(unsigned char command, unsigned char option, unsigned char type, message_abstract_u * packet) {
+inline packet_information_t createPacket(unsigned char command, unsigned char option, unsigned char type, message_abstract_u * packet, size_t len) {
     packet_information_t information;
     information.command = command;
     information.option = option;
     information.type = type;
-    motor_command_map_t command_motor;
-    if (option == PACKET_DATA) {
-        switch (type) {
-            case HASHMAP_SYSTEM:
-                information.length = LNG_HEAD_INFORMATION_PACKET + hashmap_system[command];
-                break;
-            case HASHMAP_MOTION:
-                information.length = LNG_HEAD_INFORMATION_PACKET + hashmap_motion[command];
-                break;
-            case HASHMAP_NAVIGATION:
-                information.length = LNG_HEAD_INFORMATION_PACKET + hashmap_navigation[command];
-                break;
-            case HASHMAP_MOTOR:
-                command_motor.command_message = command;
-                information.length = LNG_HEAD_INFORMATION_PACKET + hashmap_motor[command_motor.bitset.command];
-                break;
-            default:
-                //TODO throw
-                break;
-        }
-    } else {
-        information.length = LNG_HEAD_INFORMATION_PACKET;
-    }
+    information.length = LNG_HEAD_INFORMATION_PACKET + len;
     if (packet != NULL) {
-        memcpy(&information.message, packet, sizeof (message_abstract_u));
+        memcpy(&information.message, packet, len);
     }
     return information;
 }
 
-/* inline */
-packet_information_t createDataPacket(unsigned char command, unsigned char type, message_abstract_u * packet) {
-    return createPacket(command, PACKET_DATA, type, packet);
+inline packet_information_t createDataPacket(unsigned char command, unsigned char type, message_abstract_u * packet, size_t len) {
+    return createPacket(command, PACKET_DATA, type, packet, len);
 }

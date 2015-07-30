@@ -22,6 +22,9 @@
 extern "C" {
 #endif
     
+//Name for HASHMAP with information about standard messages
+#define HASHMAP_SYSTEM          'S'
+    
 // Type of serial errors
 #define MAX_BUFF_ERROR_SERIAL 13
 // Numbers of process names 
@@ -70,7 +73,6 @@ typedef struct _system_service {
  * * data required or read
  */
 typedef struct _system_task {
-    uint8_t hashmap;
     uint8_t number;
     uint8_t data;
 } system_task_t;
@@ -83,7 +85,6 @@ typedef struct _system_task {
  * * list for others processes
  */
 typedef struct _system_task_name {
-    uint8_t hashmap;
     uint8_t number;
     char data[MAX_BUFF_TASK_NAME];
 } system_task_name_t;
@@ -117,22 +118,6 @@ typedef union _system_frame {
 #define SERVICE_CODE_AUTHOR     'a'
 #define SERVICE_CODE_BOARD_TYPE 't'
 #define SERVICE_CODE_BOARD_NAME 'n'
-
-//Name for HASHMAP with information about standard messages
-#define HASHMAP_SYSTEM          'S'
-#define HASHMAP_SYSTEM_NUMBER   10
-
-/**
- * Table with conversion number message in a length for data messages
- */
-#define HASHMAP_SYSTEM_INITIALIZE hashmap_system[SYSTEM_SERVICE] = LNG_SYSTEM_SERVICE;           \
-                                  hashmap_system[SYSTEM_TASK_NAME] = LNG_SYSTEM_TASK_NAME;       \
-                                  hashmap_system[SYSTEM_TASK_TIME] = LNG_SYSTEM_TASK;            \
-                                  hashmap_system[SYSTEM_TASK_PRIORITY] = LNG_SYSTEM_TASK;        \
-                                  hashmap_system[SYSTEM_TASK_FRQ] = LNG_SYSTEM_TASK;             \
-                                  hashmap_system[SYSTEM_TASK_NUM] = LNG_SYSTEM_TASK;             \
-                                  hashmap_system[SYSTEM_PARAMETER] = LNG_SYSTEM_PARAMETER;       \
-                                  hashmap_system[SYSTEM_SERIAL_ERROR] = LNG_SYSTEM_ERROR_SERIAL;
 
 #ifdef	__cplusplus
 }
