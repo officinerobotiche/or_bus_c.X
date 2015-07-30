@@ -41,12 +41,6 @@ typedef struct _hashmap {
 hashmap hash[HASHMAP_NUMBER];
 unsigned short counter = 0;
 
-/** GLOBAL VARIBLES */
-// From serial/serial.c
-extern system_error_serial_t serial_error;
-extern packet_t receive_pkg;
-extern char receive_header;
-
 /******************************************************************************/
 /* Parsing functions                                                          */
 /******************************************************************************/
@@ -80,11 +74,11 @@ int get_key(unsigned char hashmap) {
     return -1;
 }
 
-inline bool parser(packet_information_t* list_to_send, size_t* len) {
+inline bool parser(packet_t* receive_pkg, packet_information_t* list_to_send, size_t* len) {
     unsigned int i;
-    for (i = 0; i < receive_pkg.length; i += receive_pkg.buffer[i]) {
+    for (i = 0; i < receive_pkg->length; i += receive_pkg->buffer[i]) {
         packet_information_t info;
-        memcpy((unsigned char*) &info, &receive_pkg.buffer[i], receive_pkg.buffer[i]);
+        memcpy((unsigned char*) &info, &receive_pkg->buffer[i], receive_pkg->buffer[i]);
         int key = get_key(info.type);
         if(key != -1) {
             switch (info.option) {

@@ -24,10 +24,6 @@ extern "C" {
 
 #include "packet/packet.h"
 
-#define HEADER_SYNC '#'
-#define HEADER_ASYNC '@'
-#define HEAD_PKG 2
-
 #define ERROR_FRAMMING -1   //Framing Error bit
 #define ERROR_OVERRUN -2    //overrun error
 
@@ -47,8 +43,9 @@ extern "C" {
 
     /**
      * Init buffer serial_error to zero
+     * @param packet_rx Packet received 
      */
-    void init_buff_serial_error();
+    void ORB_Message_Init(packet_t* packet_rx);
 
     /**
      * Function called on _U1RXInterrupt for decode packet
