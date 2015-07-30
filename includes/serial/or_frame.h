@@ -47,7 +47,7 @@ extern "C" {
      * Init hashmap for decode messages
      * Load all hashmaps from packet/packet.h and packet/unav.h
      */
-    void init_hashmap_packet();
+    void orb_frame_init();
 
     void set_frame_reader(unsigned char hash, frame_reader_t send, frame_reader_t receive);
 

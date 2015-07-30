@@ -41,7 +41,7 @@ system_error_serial_t serial_error;
 /* Communication Functions                                                    */
 /******************************************************************************/
 
-void ORB_Message_Init(packet_t* packet_rx) {
+void orb_message_init(packet_t* packet_rx) {
     packet_receive = packet_rx;
     memset(serial_error.number, 0, MAX_BUFF_ERROR_SERIAL);
 }

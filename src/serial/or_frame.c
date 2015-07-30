@@ -45,7 +45,7 @@ unsigned short counter = 0;
 /* Parsing functions                                                          */
 /******************************************************************************/
 
-void init_hashmap_packet() {
+void orb_frame_init() {
     unsigned short i;
     for(i = 0; i < HASHMAP_NUMBER; ++i) {
         hash[i].reader.send = NULL;

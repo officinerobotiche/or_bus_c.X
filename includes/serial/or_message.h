@@ -45,7 +45,7 @@ extern "C" {
      * Init buffer serial_error to zero
      * @param packet_rx Packet received 
      */
-    void ORB_Message_Init(packet_t* packet_rx);
+    void orb_message_init(packet_t* packet_rx);
 
     /**
      * Function called on _U1RXInterrupt for decode packet
