@@ -10,6 +10,7 @@
         <itemPath>includes/packet/frame_motor.h</itemPath>
         <itemPath>includes/packet/frame_navigation.h</itemPath>
         <itemPath>includes/packet/frame_motion.h</itemPath>
+        <itemPath>includes/packet/frame_gpio.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="serial" projectFiles="true">
         <itemPath>includes/serial/or_frame.h</itemPath>
