@@ -15,8 +15,8 @@
  * Public License for more details
  */
 
-#ifndef FRAME_GPIO_H
-#define	FRAME_GPIO_H
+#ifndef FRAME_PERIPHERALS_H
+#define	FRAME_PERIPHERALS_H
 
 #ifdef	__cplusplus
 extern "C" {
@@ -25,43 +25,45 @@ extern "C" {
 #include <stdint.h>
 
 //Name for HASHMAP with information about standard messages
-#define HASHMAP_GPIO          'P'
+#define HASHMAP_PERIPHERALS          'P'
 
 /**
  * Configuration GPIO
  * - [#]     Number GPIO to set
- * - [0 - 2] Configuration GPIO [1 Read, 2 Write, 3 Analog (if available)]
+ * - [0 - 2] Configuration GPIO [0 Read, 1 Write, 2 Analog (if available)]
  */
-typedef struct _gpio_set {
+typedef struct _peripherals_gpio_set {
     uint8_t number;
     int8_t type;
-} gpio_set_t;
+} peripherals_gpio_set_t;
 #define LNG_GPIO_SET sizeof(gpio_set_t)   
 
-typedef struct _gpio_analog {
+typedef struct _peripherals_gpio_analog {
     
-} gpio_analog_t;
+} peripherals_gpio_analog_t;
 
-typedef int16_t gpio_port_t;
+typedef int16_t peripherals_gpio_port_t;
 #define LNG_GPIO_PORT sizeof(gpio_port_t) 
 
 /**
  * List of all system messages
  */
-typedef union _gpio_frame {
-    gpio_set_t set;
-    gpio_port_t port;
-} gpio_frame_u;
+typedef union _peripherals_gpio_frame {
+    peripherals_gpio_set_t set;
+    peripherals_gpio_port_t port;
+} peripherals_gpio_frame_u;
     
 //Number association for standard messages
-#define GPIO_SET       0
-#define GPIO_ALL       1
-#define GPIO           2
+#define PERIPHERALS_GPIO_SET       0
+#define PERIPHERALS_GPIO_ALL       1
+#define PERIPHERALS_GPIO           2
+#define PERIPHERALS_SERIAL         3
+#define PERIPHERALS_TIMER          4
 
     
 #ifdef	__cplusplus
 }
 #endif
 
-#endif	/* FRAME_GPIO_H */
+#endif	/* FRAME_PERIPHERALS_H */
 

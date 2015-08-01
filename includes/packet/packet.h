@@ -43,7 +43,7 @@
 #include "packet/frame_motor.h"
 #include "packet/frame_system.h"
 #include "packet/frame_navigation.h"
-#include "packet/frame_gpio.h"
+#include "packet/frame_peripherals.h"
 
 /// Header packet
 #define PACKET_HEADER '#'
@@ -89,7 +89,7 @@ typedef union _message_abstract {
     motor_frame_u motor;
     motion_frame_u motion;
     navigation_frame_u sensor;
-    gpio_frame_u gpio;
+    peripherals_gpio_frame_u gpio;
 } message_abstract_u;
 
 /**
