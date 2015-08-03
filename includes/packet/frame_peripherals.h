@@ -45,12 +45,19 @@ typedef struct _peripherals_gpio_analog {
 typedef int16_t peripherals_gpio_port_t;
 #define LNG_GPIO_PORT sizeof(gpio_port_t) 
 
+typedef struct _peripherals_serial {
+    uint8_t number;
+    int16_t baud;
+    int16_t byte_conf;
+} peripherals_serial_t;
+
 /**
  * List of all system messages
  */
 typedef union _peripherals_gpio_frame {
     peripherals_gpio_set_t set;
     peripherals_gpio_port_t port;
+    peripherals_serial_t serial;
 } peripherals_gpio_frame_u;
     
 //Number association for standard messages
