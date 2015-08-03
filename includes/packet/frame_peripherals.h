@@ -36,20 +36,22 @@ typedef struct _peripherals_gpio_set {
     uint8_t number;
     int8_t type;
 } peripherals_gpio_set_t;
-#define LNG_GPIO_SET sizeof(gpio_set_t)   
+#define LNG_PERIPHERALS_GPIO_SET sizeof(peripherals_gpio_set_t)   
 
 typedef struct _peripherals_gpio_analog {
     
 } peripherals_gpio_analog_t;
+#define LNG_PERIPHERALS_GPIO_ANALOG sizeof(peripherals_gpio_analog_t)
 
 typedef int16_t peripherals_gpio_port_t;
-#define LNG_GPIO_PORT sizeof(gpio_port_t) 
+#define LNG_PERIPHERALS_GPIO_PORT sizeof(peripherals_gpio_port_t) 
 
 typedef struct _peripherals_serial {
     uint8_t number;
     int16_t baud;
     int16_t byte_conf;
 } peripherals_serial_t;
+#define LNG_PERIPHERALS_SERIAL sizeof(peripherals_serial_t)
 
 /**
  * List of all system messages
@@ -59,7 +61,7 @@ typedef union _peripherals_gpio_frame {
     peripherals_gpio_port_t port;
     peripherals_serial_t serial;
 } peripherals_gpio_frame_u;
-    
+
 //Number association for standard messages
 #define PERIPHERALS_GPIO_SET       0
 #define PERIPHERALS_GPIO_ALL       1
