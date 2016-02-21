@@ -55,13 +55,15 @@ int pkg_header(unsigned char rxchar) {
         pkg_parse = &pkg_length;
         return false;
     } else {
-        return pkg_error(ERROR_HEADER);
+        pkg_error(ERROR_HEADER);
+        return false;
     }
 }
 
 int pkg_length(unsigned char rxchar) {
     if (rxchar > MAX_BUFF_RX) {
-        return pkg_error(ERROR_LENGTH);
+        pkg_error(ERROR_LENGTH);
+        return false;
     } else {
         pkg_parse = &pkg_data;
         packet_receive->length = rxchar;
@@ -77,8 +79,8 @@ int pkg_data(unsigned char rxchar) {
             index_data = 0; //flush index array data buffer
             return true;
         } else {
-            bool t = pkg_error(ERROR_CKS);
-            return t;
+            pkg_error(ERROR_CKS);
+            return false;
         }
     } else {
         packet_receive->buffer[index_data] = rxchar;
