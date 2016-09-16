@@ -64,15 +64,15 @@ typedef int8_t motor_state_t;
 /**
  * Message for the status of the motor controller, information about:
  * - [#]       state motor - type of control
- * - [mV]      mean voltage applied in the bridge - PWM
+ * - [*]       Value of PWM applied
  * - [Nm]      torque
  * - [m rad/s] velocity
  * - [rad]     position
  * - [rad]     delta position
  */
-typedef struct _motor {
+typedef struct __attribute__ ((__packed__)) _motor {
     motor_state_t state;
-    motor_control_t volt;
+    motor_control_t pwm;
     motor_control_t torque;
     motor_control_t velocity;
     float position;
@@ -83,48 +83,65 @@ typedef struct _motor {
 /**
  * All diagnostic information about state of motor
  * - [mA]  Motor current
+ * - [mV]  mean voltage applied in the bridge - PWM
  * - [m°C] Temperature motor
  */
-typedef struct _motor_diagnostic {
+typedef struct __attribute__ ((__packed__)) _motor_diagnostic {
     int16_t current;
+    int16_t volt;
     uint16_t temperature;
 } motor_diagnostic_t;
 #define LNG_MOTOR_DIAGNOSTIC sizeof(motor_diagnostic_t)
 
 /**
- * Encoder parameters definition:
- * - [ 0, 1] Position encoder respect to gear [0 after, 1 before]
- * - [#]     Encoder CPR
- * - [ 0, 1] Z-index [0 false, 1 true]
+ * Encoder type definition:
+ * - [ 0, 1]    Position encoder respect to gear [0 after, 1 before]
+ * - [ 0, 1]    Z-index [0 false, 1 true]
+ * - [ 0, 1]    Channel [0 One channel, 1 Two channels]
  */
-#define MOTOR_GEAR_ENC_AFTER 0
-#define MOTOR_GEAR_ENC_BEFORE 1
-typedef struct _motor_parameter_encoder {
-    uint8_t position;
+#define MOTOR_ENC_AFTER_GEAR 0
+#define MOTOR_ENC_BEFORE_GEAR 1
+#define MOTOR_ENC_Z_INDEX_NO 0
+#define MOTOR_ENC_Z_INDEX_YES 1
+#define MOTOR_ENC_CHANNEL_ONE 0
+#define MOTOR_ENC_CHANNEL_TWO 1
+typedef struct _encoder_type {
+        uint8_t position;
+        uint8_t z_index;
+        uint8_t channels;
+        uint8_t          : 5;
+} motor_encoder_type_t;
+/**
+ * Encoder parameters definition:
+ * - [#]     Encoder CPR
+ * Encoder type definition
+ */
+typedef struct __attribute__ ((__packed__)) _motor_parameter_encoder {
     uint16_t cpr;
-    uint8_t z_index;
+    motor_encoder_type_t type;
 } motor_parameter_encoder_t;
 #define LNG_MOTOR_PARAMETER_ENCODER sizeof(motor_parameter_encoder_t)
 
 /**
  * Parameters definition for motor:
- * - [mV]    Supplied voltage in H-bridge
  * - [ 0, 1] Default logic value to enable the H-bridge [0 low, 1 high]
- * - [XXX] TODO
- * - [ 0, 1] Current sensor with sign [0 false, 1 true]
- * - [XXX] TODO
+ * - [XXX]   TODO
+ * - [XXX]   TODO
+ * - [V]     Voltage sensor gain 
+ * - [V]     Current sense offset in volt
+ * - [V/A]   Current sense gain in Volt Ampere
  */
 #define MOTOR_ENABLE_LOW 0
 #define MOTOR_ENABLE_HIGH 1
-typedef struct _motor_parameter_bridge {
-    uint16_t volt;
+typedef struct __attribute__ ((__packed__)) _motor_parameter_bridge {
     uint8_t enable;
-    int16_t dead_zone;
-    uint8_t signed_current;
-    float k_bemf;
+    uint16_t pwm_dead_zone;
+    uint16_t pwm_frequency;
+    float volt_gain;
+    float current_offset;
+    float current_gain;
 } motor_parameter_bridge_t;
 #define LNG_MOTOR_PARAMETER_BRIDGE sizeof(motor_parameter_bridge_t)
-
 /**
  * Collection of parameters to configure bridge and encoder
  * - Bridge configuration parameters
@@ -134,11 +151,11 @@ typedef struct _motor_parameter_bridge {
  */
 #define MOTOR_ROTATION_CLOCKWISE -1
 #define MOTOR_ROTATION_COUNTERCLOCKWISE 1
-typedef struct _motor_parameter {
+typedef struct __attribute__ ((__packed__)) _motor_parameter {
+    float ratio;
+    int8_t rotation;
     motor_parameter_bridge_t bridge;
     motor_parameter_encoder_t encoder;
-    int8_t rotation;
-    float ratio;
 } motor_parameter_t;
 #define LNG_MOTOR_PARAMETER sizeof(motor_parameter_t)
 
@@ -148,7 +165,7 @@ typedef struct _motor_parameter {
  * - [s]  Time to disable bridge after the speed reaches velocity is zero
  * - [ms] Timeout to start emergency stop of the motors
  */
-typedef struct _motor_emergency {
+typedef struct __attribute__ ((__packed__)) _motor_emergency {
     float slope_time;
     float bridge_off;
     uint16_t timeout;
@@ -161,7 +178,7 @@ typedef struct _motor_emergency {
  * - [X] K_i [physic dimension depends to type of control]
  * - [X] K_d [physic dimension depends to type of control]
  */
-typedef struct _motor_pid {
+typedef struct __attribute__ ((__packed__)) _motor_pid {
     float kp;
     float ki;
     float kd;
