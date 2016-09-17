@@ -35,14 +35,14 @@
 
 /**
  * This union converts a command message in a motor index and type of command
- * - [#] maximum motor 2^4 = 16
- * - [#] maximum command 2^4 = 16
+ * - [#] maximum motor 2^3 = 8
+ * - [#] maximum command 2^5 = 32
  */
 typedef union _motor_command_map {
 
     struct {
-        unsigned char motor : 4;    ///< Motor index
-        unsigned char command : 4;  ///< Motor command
+        unsigned char motor : 3;    ///< Motor index
+        unsigned char command : 5;  ///< Motor command
     } bitset;
     unsigned char command_message;
 } motor_command_map_t;
@@ -137,6 +137,7 @@ typedef struct __attribute__ ((__packed__)) _motor_parameter_bridge {
     uint8_t enable;
     uint16_t pwm_dead_zone;
     uint16_t pwm_frequency;
+    float volt_offset;
     float volt_gain;
     float current_offset;
     float current_gain;
@@ -154,6 +155,7 @@ typedef struct __attribute__ ((__packed__)) _motor_parameter_bridge {
 typedef struct __attribute__ ((__packed__)) _motor_parameter {
     float ratio;
     int8_t rotation;
+    uint8_t cascade_control;
     motor_parameter_bridge_t bridge;
     motor_parameter_encoder_t encoder;
 } motor_parameter_t;
