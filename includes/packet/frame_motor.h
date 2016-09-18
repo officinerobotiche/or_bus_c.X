@@ -87,8 +87,8 @@ typedef struct __attribute__ ((__packed__)) _motor {
  * - [m°C] Temperature motor
  */
 typedef struct __attribute__ ((__packed__)) _motor_diagnostic {
-    int16_t current;
-    int16_t volt;
+    int32_t current;
+    uint16_t volt;
     uint16_t temperature;
 } motor_diagnostic_t;
 #define LNG_MOTOR_DIAGNOSTIC sizeof(motor_diagnostic_t)
