@@ -97,12 +97,12 @@ typedef struct __attribute__ ((__packed__)) _motor_diagnostic {
 
 /**
  * Encoder type definition:
- * - [ 0, 1]    Position encoder respect to gear [0 after, 1 before]
+ * - [ 0, 1]    Position encoder respect to gear [0 before, 1 after]
  * - [ 0, 1]    Z-index [0 false, 1 true]
  * - [ 0, 1]    Channel [0 One channel, 1 Two channels]
  */
-#define MOTOR_ENC_AFTER_GEAR 0
-#define MOTOR_ENC_BEFORE_GEAR 1
+#define MOTOR_ENC_BEFORE_GEAR 0
+#define MOTOR_ENC_AFTER_GEAR 1
 #define MOTOR_ENC_Z_INDEX_NO 0
 #define MOTOR_ENC_Z_INDEX_YES 1
 #define MOTOR_ENC_CHANNEL_ONE 0
