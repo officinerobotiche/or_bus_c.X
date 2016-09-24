@@ -211,19 +211,20 @@ typedef union _motor_frame {
 //Numbers associated for motor messages to be used in the structure @ref motor_command_map_t as value for @ref command
 #define MOTOR_MEASURE             0 ///< TODO Explain what this means
 #define MOTOR_REFERENCE           1 ///< TODO Explain what this means
-#define MOTOR_DIAGNOSTIC          2 ///< TODO Explain what this means
-#define MOTOR_PARAMETER           3 ///< TODO Explain what this means
-#define MOTOR_PARAMETER_ENCODER   4 ///< TODO Explain what this means
-#define MOTOR_PARAMETER_BRIDGE    5 ///< TODO Explain what this means
-#define MOTOR_CONSTRAINT          6 ///< TODO Explain what this means
-#define MOTOR_EMERGENCY           7 ///< TODO Explain what this means
-#define MOTOR_STATE               8 ///< TODO Explain what this means
-#define MOTOR_POS_RESET           9 ///< TODO Explain what this means
-#define MOTOR_POS_PID            10 ///< TODO Explain what this means
-#define MOTOR_POS_REF            11 ///< TODO Explain what this means
-#define MOTOR_VEL_PID            12 ///< TODO Explain what this means
-#define MOTOR_VEL_REF            13 ///< TODO Explain what this means
-#define MOTOR_TORQUE_PID         14 ///< TODO Explain what this means
-#define MOTOR_TORQUE_REF         15 ///< TODO Explain what this means
+#define MOTOR_CONTROL             2 ///< TODO Explain what this means
+#define MOTOR_DIAGNOSTIC          3 ///< TODO Explain what this means
+#define MOTOR_PARAMETER           4 ///< TODO Explain what this means
+#define MOTOR_PARAMETER_ENCODER   5 ///< TODO Explain what this means
+#define MOTOR_PARAMETER_BRIDGE    6 ///< TODO Explain what this means
+#define MOTOR_CONSTRAINT          7 ///< TODO Explain what this means
+#define MOTOR_EMERGENCY           8 ///< TODO Explain what this means
+#define MOTOR_STATE               9 ///< TODO Explain what this means
+#define MOTOR_POS_RESET          10 ///< TODO Explain what this means
+#define MOTOR_POS_PID            11 ///< TODO Explain what this means
+#define MOTOR_POS_REF            12 ///< TODO Explain what this means
+#define MOTOR_VEL_PID            13 ///< TODO Explain what this means
+#define MOTOR_VEL_REF            14 ///< TODO Explain what this means
+#define MOTOR_CURRENT_PID        15 ///< TODO Explain what this means
+#define MOTOR_CURRENT_REF        16 ///< TODO Explain what this means
 
 #endif	/* FRAMEMOTOR_H */
