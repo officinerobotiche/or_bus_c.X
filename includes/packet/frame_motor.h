@@ -30,7 +30,7 @@
 #define STATE_CONTROL_DISABLE       0   ///< Motors disabled
 #define STATE_CONTROL_POSITION      1   ///< Motors controlled in position
 #define STATE_CONTROL_VELOCITY      2   ///< Motors controlled in velocity
-#define STATE_CONTROL_TORQUE        3   ///< Motors controller in torque
+#define STATE_CONTROL_CURRENT       3   ///< Motors controller in torque
 #define STATE_CONTROL_DIRECT        4   ///< Motors controlled using direct PWM signals
 
 /**
@@ -67,7 +67,7 @@ typedef int8_t motor_state_t;
  * Message for the status of the motor controller, information about:
  * - [#]       state motor - type of control
  * - [*]       Value of PWM applied
- * - [Nm]      torque
+ * - [mA]      Current
  * - [m rad/s] velocity
  * - [rad]     position
  * - [rad]     delta position
@@ -75,7 +75,7 @@ typedef int8_t motor_state_t;
 typedef struct __attribute__ ((__packed__)) _motor {
     motor_state_t state;
     motor_control_t pwm;
-    motor_control_t torque;
+    motor_control_t current;
     motor_control_t velocity;
     float position;
     float position_delta;
@@ -84,14 +84,16 @@ typedef struct __attribute__ ((__packed__)) _motor {
 
 /**
  * All diagnostic information about state of motor
- * - [mA]  Motor current
+ * - [mW]  Absorbed power motor
  * - [mV]  mean voltage applied in the bridge - PWM
  * - [m°C] Temperature motor
+ * - [nS]  Time of execution control routine
  */
 typedef struct __attribute__ ((__packed__)) _motor_diagnostic {
-    int32_t current;
+    int32_t watt;
     uint16_t volt;
     uint16_t temperature;
+    uint16_t time_control;
 } motor_diagnostic_t;
 #define LNG_MOTOR_DIAGNOSTIC sizeof(motor_diagnostic_t)
 
@@ -157,7 +159,6 @@ typedef struct __attribute__ ((__packed__)) _motor_parameter_bridge {
 typedef struct __attribute__ ((__packed__)) _motor_parameter {
     float ratio;
     int8_t rotation;
-    uint8_t cascade_control;
     motor_parameter_bridge_t bridge;
     motor_parameter_encoder_t encoder;
 } motor_parameter_t;
@@ -181,14 +182,17 @@ typedef struct __attribute__ ((__packed__)) _motor_emergency {
  * - [X] K_p [physic dimension depends to type of control]
  * - [X] K_i [physic dimension depends to type of control]
  * - [X] K_d [physic dimension depends to type of control]
+ * - [Hz] Frequency of controller
+ * - [true, false] Run the pid controller
  */
 typedef struct __attribute__ ((__packed__)) _motor_pid {
     float kp;
     float ki;
     float kd;
+    uint32_t frequency;
+    uint8_t enable;
 } motor_pid_t;
 #define LNG_MOTOR_PID sizeof(motor_pid_t)
-
 /**
  * List of all motor messages
  */
