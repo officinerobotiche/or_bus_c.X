@@ -23,7 +23,7 @@
 #include <stdbool.h>       /* Includes true/false definition */
 #include <string.h>
 
-#include "serial/or_message.h"
+#include "or_bus/or_message.h"
 
 /******************************************************************************/
 /* Global Variable Declaration                                                */
