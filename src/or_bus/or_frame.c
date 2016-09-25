@@ -74,7 +74,7 @@ int get_key(unsigned char hashmap) {
     return -1;
 }
 
-inline bool parser(packet_t* receive_pkg, packet_information_t* list_to_send, size_t* len) {
+bool parser(packet_t* receive_pkg, packet_information_t* list_to_send, size_t* len) {
     unsigned int i;
     for (i = 0; i < receive_pkg->length; i += receive_pkg->buffer[i]) {
         packet_information_t info;

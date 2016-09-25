@@ -74,7 +74,7 @@ extern "C" {
      * *This function is a long function*
      * @return time to compute parsing packet
      */
-    inline bool parser(packet_t* receive_pkg, packet_information_t* list_to_send, size_t* len);
+    bool parser(packet_t* receive_pkg, packet_information_t* list_to_send, size_t* len);
 
     /**
      * Get a list of messages to transform in a packet for serial communication.
