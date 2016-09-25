@@ -84,13 +84,13 @@ bool parser(packet_t* receive_pkg, packet_information_t* list_to_send, size_t* l
         if(key != -1) {
             switch (info.option) {
                 case PACKET_DATA:
-                    new_packet = hash[key].reader.receive(info.option, info.type, info.command, &info.message);
+                    new_packet = hash[key].reader.receive(info.option, info.type, info.command, info.message);
                     if(new_packet.option != PACKET_EMPTY){
                         list_to_send[(*len)++] = new_packet;
                     }
                     break;
                 case PACKET_REQUEST:
-                    new_packet = hash[key].reader.send(info.option, info.type, info.command, &info.message);
+                    new_packet = hash[key].reader.send(info.option, info.type, info.command, info.message);
                     if(new_packet.option != PACKET_EMPTY){
                         list_to_send[(*len)++] = new_packet;
                     }

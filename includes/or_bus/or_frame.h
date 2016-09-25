@@ -33,8 +33,7 @@ extern "C" {
     // Dimension of list messages to decode in a packet
     #define BUFFER_LIST_PARSING 10
     /// function to decode packet
-    //typedef void (*frame_reader_t)(packet_information_t*, size_t*, packet_information_t*);
-    typedef packet_information_t (*frame_reader_t)(unsigned char, unsigned char, unsigned char, message_abstract_u*);
+    typedef packet_information_t (*frame_reader_t)(unsigned char, unsigned char, unsigned char, message_abstract_u);
     
     #define CREATE_PACKET_DATA(cmd, type, data) createPacket((cmd), PACKET_DATA, (type), &(data), sizeof(data))
     #define CREATE_PACKET_RESPONSE(cmd, type, x) createPacket((cmd), (x), (type), NULL, 0)
