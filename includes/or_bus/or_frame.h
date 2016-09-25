@@ -33,12 +33,14 @@ extern "C" {
     // Dimension of list messages to decode in a packet
     #define BUFFER_LIST_PARSING 10
     /// function to decode packet
-    typedef void (*frame_reader_t)(packet_information_t*, size_t*, packet_information_t*);
+    //typedef void (*frame_reader_t)(packet_information_t*, size_t*, packet_information_t*);
+    typedef packet_information_t (*frame_reader_t)(unsigned char, unsigned char, unsigned char, message_abstract_u*);
     
     #define CREATE_PACKET_DATA(cmd, type, data) createPacket((cmd), PACKET_DATA, (type), &(data), sizeof(data))
     #define CREATE_PACKET_RESPONSE(cmd, type, x) createPacket((cmd), (x), (type), NULL, 0)
     #define CREATE_PACKET_ACK(cmd,type) CREATE_PACKET_RESPONSE(cmd, type, PACKET_ACK)
     #define CREATE_PACKET_NACK(cmd,type) CREATE_PACKET_RESPONSE(cmd, type, PACKET_NACK)
+    #define CREATE_PACKET_EMPTY CREATE_PACKET_RESPONSE(0, 0, PACKET_EMPTY)
 
 /******************************************************************************/
 /* System Function Prototypes                                                 */
@@ -105,7 +107,7 @@ extern "C" {
      * @param size of packet
      * @return information_packet ready to send
      */
-    inline packet_information_t createPacket(unsigned char command, unsigned char option, unsigned char type, message_abstract_u * packet, size_t len);
+    packet_information_t createPacket(unsigned char command, unsigned char option, unsigned char type, message_abstract_u * packet, size_t len);
     /**
      * Create an information packet for a message with data (D).
      * This function use createPacket for create information_packet

@@ -76,6 +76,7 @@ int get_key(unsigned char hashmap) {
 
 bool parser(packet_t* receive_pkg, packet_information_t* list_to_send, size_t* len) {
     unsigned int i;
+    packet_information_t new_packet;
     for (i = 0; i < receive_pkg->length; i += receive_pkg->buffer[i]) {
         packet_information_t info;
         memcpy((unsigned char*) &info, &receive_pkg->buffer[i], receive_pkg->buffer[i]);
@@ -83,10 +84,16 @@ bool parser(packet_t* receive_pkg, packet_information_t* list_to_send, size_t* l
         if(key != -1) {
             switch (info.option) {
                 case PACKET_DATA:
-                    hash[key].reader.receive(&list_to_send[0], len, &info);
+                    new_packet = hash[key].reader.receive(info.option, info.type, info.command, &info.message);
+                    if(new_packet.option != PACKET_EMPTY){
+                        list_to_send[(*len)++] = new_packet;
+                    }
                     break;
                 case PACKET_REQUEST:
-                    hash[key].reader.send(&list_to_send[0], len, &info);
+                    new_packet = hash[key].reader.send(info.option, info.type, info.command, &info.message);
+                    if(new_packet.option != PACKET_EMPTY){
+                        list_to_send[(*len)++] = new_packet;
+                    }
                     break;
             }
         }
@@ -118,7 +125,7 @@ packet_t encoderSingle(packet_information_t send) {
     return packet_send;
 }
 
-inline packet_information_t createPacket(unsigned char command, unsigned char option, unsigned char type, message_abstract_u * packet, size_t len) {
+packet_information_t createPacket(unsigned char command, unsigned char option, unsigned char type, message_abstract_u * packet, size_t len) {
     packet_information_t information;
     information.command = command;
     information.option = option;

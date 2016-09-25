@@ -65,6 +65,8 @@
 #define PACKET_ACK      'K'
 // NACK
 #define PACKET_NACK     'N'
+// Empty packet
+#define PACKET_EMPTY    'E'
 // Length of information packet (without data)
 #define LNG_HEAD_INFORMATION_PACKET 4
 
