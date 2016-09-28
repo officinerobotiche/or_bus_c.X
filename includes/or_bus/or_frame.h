@@ -85,7 +85,7 @@ extern "C" {
      * @param len length of list_send list
      * @return a packet_t with all data to send
      */
-    packet_t encoder(packet_information_t *list_send, size_t len);
+    unsigned int encoder(packet_t *packet, packet_information_t *list_send, size_t len);
 
     /**
      * Get an information_packet to convert in a buffer of char to put

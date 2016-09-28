@@ -105,19 +105,23 @@ bool parser(packet_t* receive_pkg, packet_information_t* list_to_send, size_t* l
     return true;
 }
 
-packet_t encoder(packet_information_t *list_send, size_t len) {
+unsigned int encoder(packet_t *packet_send, packet_information_t *list_send, size_t len) {
     int i;
-    packet_t packet_send;
-    packet_send.length = 0;
+    packet_send->length = 0;
     for (i = 0; i < len; ++i) {
+
         packet_buffer_u buffer_packet;
         buffer_packet.packet_information = list_send[i];
 
-        memcpy(&packet_send.buffer[packet_send.length], &buffer_packet.buffer, buffer_packet.packet_information.length);
+        // Check if the size can enter in the buffer
+        if(packet_send->length + buffer_packet.packet_information.length > MAX_BUFF_TX)
+            break;
 
-        packet_send.length += buffer_packet.packet_information.length;
+        memcpy(&packet_send->buffer[packet_send->length], &buffer_packet.buffer, buffer_packet.packet_information.length);
+
+        packet_send->length += buffer_packet.packet_information.length;
     }
-    return packet_send;
+    return i;
 }
 
 packet_t encoderSingle(packet_information_t send) {
