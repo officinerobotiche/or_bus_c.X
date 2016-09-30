@@ -51,9 +51,9 @@ typedef union _motor_command_map {
  * Message to control single motor
  * - [X] command or measure to control [physic dimension depends to type of command]
  */
-#define MOTOR_CONTROL_MAX INT16_MAX
-#define MOTOR_CONTROL_MIN INT16_MIN
-typedef int16_t motor_control_t;
+#define MOTOR_CONTROL_MAX INT32_MAX
+#define MOTOR_CONTROL_MIN INT32_MIN
+typedef int32_t motor_control_t;
 #define LNG_MOTOR_CONTROL sizeof(motor_control_t)
 
 /**
