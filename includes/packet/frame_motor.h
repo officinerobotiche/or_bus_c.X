@@ -93,7 +93,7 @@ typedef struct __attribute__ ((__packed__)) _motor_diagnostic {
     int32_t watt;
     uint16_t volt;
     uint16_t temperature;
-    uint16_t time_control;
+    uint32_t time_control;
 } motor_diagnostic_t;
 #define LNG_MOTOR_DIAGNOSTIC sizeof(motor_diagnostic_t)
 
