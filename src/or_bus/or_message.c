@@ -43,7 +43,7 @@ system_error_serial_t serial_error;
 
 void orb_message_init(packet_t* packet_rx) {
     packet_receive = packet_rx;
-    memset(serial_error.number, 0, MAX_BUFF_ERROR_SERIAL);
+    memset(serial_error, 0, MAX_BUFF_ERROR_SERIAL);
 }
 
 int decode_pkgs(unsigned char rxchar) {
@@ -92,7 +92,7 @@ int pkg_data(unsigned char rxchar) {
 int pkg_error(int error) {
     index_data = 0;
     pkg_parse = &pkg_header; //Restart parse serial packet
-    serial_error.number[(-error - 1)] += 1;
+    serial_error[(-error - 1)] += 1;
     return error;
 }
 
