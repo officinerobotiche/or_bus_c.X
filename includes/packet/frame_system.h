@@ -45,7 +45,19 @@ typedef unsigned char system_service_t[MAX_BUFF_SERVICE];
  */
 typedef int16_t system_error_serial_t[MAX_BUFF_ERROR_SERIAL];
 #define LNG_SYSTEM_ERROR_SERIAL sizeof(system_error_serial_t)
-    
+
+/**
+ * - [#]   Time in idle
+ * - [nS]  Time to parse a packet
+ * - [nS]  Time to use the ADC
+ */
+typedef struct _system_events {
+    uint32_t idle;
+    uint32_t parser;
+    uint32_t adc;
+} system_time_t;
+#define LNG_SYSTEM_TIME sizeof(system_time_t)
+
 // TO BE CHECK =========================================
     
 ///**
@@ -77,6 +89,7 @@ typedef int16_t system_error_serial_t[MAX_BUFF_ERROR_SERIAL];
 typedef union _system_frame {
     system_service_t service;
     system_error_serial_t error_serial;
+    system_time_t time;
 } system_frame_u;
 
 //Number association for standard messages
@@ -87,6 +100,7 @@ typedef union _system_frame {
 #define SYSTEM_CODE_BOARD_TYPE 't'
 #define SYSTEM_CODE_BOARD_NAME 'n'
 #define SYSTEM_SERIAL_ERROR     0
+#define SYSTEM_TIME             1
 
 #ifdef	__cplusplus
 }
