@@ -48,13 +48,17 @@ typedef int16_t system_error_serial_t[MAX_BUFF_ERROR_SERIAL];
 
 /**
  * - [#]   Time in idle
- * - [nS]  Time to parse a packet
  * - [nS]  Time to use the ADC
+ * - [nS]  time to manage all system led
+ * - [nS]  Time to parse a packet
+ * - [nS]  Time to read and write from I2C
  */
 typedef struct _system_events {
     uint32_t idle;
-    uint32_t parser;
     uint32_t adc;
+    uint32_t led;
+    uint32_t parser;
+    uint32_t i2c;
 } system_time_t;
 #define LNG_SYSTEM_TIME sizeof(system_time_t)
 
