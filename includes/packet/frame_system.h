@@ -53,7 +53,7 @@ typedef int16_t system_error_serial_t[MAX_BUFF_ERROR_SERIAL];
  * - [nS]  Time to parse a packet
  * - [nS]  Time to read and write from I2C
  */
-typedef struct _system_events {
+typedef struct __attribute__ ((__packed__)) _system_events {
     uint32_t idle;
     uint32_t adc;
     uint32_t led;
