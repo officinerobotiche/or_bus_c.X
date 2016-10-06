@@ -15,13 +15,13 @@
  * Public License for more details
 */
 
-#ifndef FRAMEMOTION_H
-#define	FRAMEMOTION_H
+#ifndef FRAMEDIFFDRIVE_H
+#define	FRAMEDIFFDRIVE_H
 
 #include <stdint.h>
 
 //Name for HASHMAP with information about motion messages
-#define HASHMAP_MOTION 'M'
+#define HASHMAP_DIFF_DRIVE 'M'
 
 /**
  * Define to select high state of control
@@ -39,8 +39,8 @@ typedef struct _coordinate {
     float y;
     float theta;
     float space;
-} motion_coordinate_t;
-#define LNG_MOTION_COORDINATE sizeof(motion_coordinate_t)
+} diff_drive_coordinate_t;
+#define LNG_DIFF_DRIVE_COORDINATE sizeof(diff_drive_coordinate_t)
 
 /**
  * Parameters definition for unicycle robot:
@@ -53,8 +53,8 @@ typedef struct _parameter_unicycle {
     float radius_l;
     float wheelbase;
     float sp_min;
-} motion_parameter_unicycle_t;
-#define LNG_MOTION_PARAMETER_UNICYCLE sizeof(motion_parameter_unicycle_t)
+} diff_drive_parameter_unicycle_t;
+#define LNG_DIFF_DRIVE_PARAMETER_UNICYCLE sizeof(diff_drive_parameter_unicycle_t)
 
 /**
  * Message for read and write velocity in a unicycle robot:
@@ -64,31 +64,31 @@ typedef struct _parameter_unicycle {
 typedef struct _velocity {
     float v;
     float w;
-} motion_velocity_t;
-#define LNG_MOTION_VELOCITY sizeof(motion_velocity_t)
+} diff_drive_velocity_t;
+#define LNG_DIFF_DRIVE_VELOCITY sizeof(diff_drive_velocity_t)
 
 /**
  * Message for read and write state high level control
  */
-typedef int8_t motion_state_t;
-#define LNG_MOTION_STATE sizeof(motion_state_t)
+typedef int8_t diff_drive_state_t;
+#define LNG_DIFF_DRIVE_STATE sizeof(diff_drive_state_t)
 
 /**
  * List of all motion messages
  */
 typedef union _motion_frame {
-    motion_coordinate_t coordinate;
-    motion_parameter_unicycle_t parameter_unicycle;
-    motion_velocity_t velocity;
-    motion_state_t state;
-} motion_frame_u;
+    diff_drive_coordinate_t coordinate;
+    diff_drive_parameter_unicycle_t parameter_unicycle;
+    diff_drive_velocity_t velocity;
+    diff_drive_state_t state;
+} diff_drive_frame_u;
 
 //Numbers associated for motion messages
-#define MOTION_COORDINATE 0
-#define MOTION_VEL 1
-#define MOTION_PARAMETER_UNICYCLE 2
-#define MOTION_STATE 3
-#define MOTION_VEL_REF 4
+#define DIFF_DRIVE_COORDINATE 0
+#define DIFF_DRIVE_VEL 1
+#define DIFF_DRIVE_PARAMETER_UNICYCLE 2
+#define DIFF_DRIVE_STATE 3
+#define DIFF_DRIVE_VEL_REF 4
                                     
-#endif	/* FRAMEMOTION_H */
+#endif	/* FRAMEDIFFDRIVE_H */
 

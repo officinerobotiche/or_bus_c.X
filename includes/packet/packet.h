@@ -39,7 +39,7 @@
 
 /*******/
 
-#include "packet/frame_motion.h"
+#include "packet/frame_diff_drive.h"
 #include "packet/frame_motor.h"
 #include "packet/frame_system.h"
 #include "packet/frame_navigation.h"
@@ -89,7 +89,7 @@
 typedef union _message_abstract {
     system_frame_u system;
     motor_frame_u motor;
-    motion_frame_u motion;
+    diff_drive_frame_u diff_drive;
     navigation_frame_u sensor;
     peripherals_gpio_frame_u gpio;
 } message_abstract_u;
