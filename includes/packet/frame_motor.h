@@ -65,7 +65,6 @@ typedef int8_t motor_state_t;
 
 /**
  * Message for the status of the motor controller, information about:
- * - [#]       state motor - type of control
  * - [*]       Value of PWM applied
  * - [m Nm]    Value of drive torque
  * - [m A]     Current
@@ -74,7 +73,6 @@ typedef int8_t motor_state_t;
  * - [rad]     delta position
  */
 typedef struct __attribute__ ((__packed__)) _motor {
-    motor_state_t state;
     motor_control_t pwm;
     motor_control_t effort;
     motor_control_t current;
@@ -86,12 +84,14 @@ typedef struct __attribute__ ((__packed__)) _motor {
 
 /**
  * All diagnostic information about state of motor
+ * - [#]       state motor - type of control
  * - [mW]  Absorbed power motor
  * - [mV]  mean voltage applied in the bridge - PWM
  * - [m°C] Temperature motor
  * - [nS]  Time of execution control routine
  */
 typedef struct __attribute__ ((__packed__)) _motor_diagnostic {
+    motor_state_t state;
     int32_t watt;
     uint16_t volt;
     uint16_t temperature;
