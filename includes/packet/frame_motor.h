@@ -67,7 +67,8 @@ typedef int8_t motor_state_t;
  * Message for the status of the motor controller, information about:
  * - [#]       state motor - type of control
  * - [*]       Value of PWM applied
- * - [mA]      Current
+ * - [m Nm]    Value of drive torque
+ * - [m A]     Current
  * - [m rad/s] velocity
  * - [rad]     position
  * - [rad]     delta position
@@ -75,6 +76,7 @@ typedef int8_t motor_state_t;
 typedef struct __attribute__ ((__packed__)) _motor {
     motor_state_t state;
     motor_control_t pwm;
+    motor_control_t effort;
     motor_control_t current;
     motor_control_t velocity;
     float position;
@@ -179,9 +181,10 @@ typedef struct __attribute__ ((__packed__)) _motor_emergency {
 
 /**
  * Message to define the gains for a PID controller
- * - [X] K_p [physic dimension depends to type of control]
- * - [X] K_i [physic dimension depends to type of control]
- * - [X] K_d [physic dimension depends to type of control]
+ * - [X] K_p  [Gain Proportional- physic dimension depends to type of control]
+ * - [X] K_i  [Gain Integrative - physic dimension depends to type of control]
+ * - [X] K_d  [Gain Derivative  - physic dimension depends to type of control]
+ * - [X] K_aw [Gain Anti Wind-up- physic dimension depends to type of control]
  * - [Hz] Frequency of controller
  * - [true, false] Run the pid controller
  */
@@ -189,6 +192,7 @@ typedef struct __attribute__ ((__packed__)) _motor_pid {
     float kp;
     float ki;
     float kd;
+    float kaw;
     uint32_t frequency;
     uint8_t enable;
 } motor_pid_t;
@@ -200,8 +204,6 @@ typedef union _motor_frame {
     motor_t motor;
     motor_diagnostic_t diagnostic;
     motor_parameter_t parameter;
-    motor_parameter_encoder_t parameter_encoder;
-    motor_parameter_bridge_t parameter_bridge;
     motor_state_t state;
     motor_emergency_t emergency;
     motor_pid_t pid;
@@ -214,17 +216,16 @@ typedef union _motor_frame {
 #define MOTOR_CONTROL             2 ///< TODO Explain what this means
 #define MOTOR_DIAGNOSTIC          3 ///< TODO Explain what this means
 #define MOTOR_PARAMETER           4 ///< TODO Explain what this means
-#define MOTOR_PARAMETER_ENCODER   5 ///< TODO Explain what this means
-#define MOTOR_PARAMETER_BRIDGE    6 ///< TODO Explain what this means
-#define MOTOR_CONSTRAINT          7 ///< TODO Explain what this means
-#define MOTOR_EMERGENCY           8 ///< TODO Explain what this means
-#define MOTOR_STATE               9 ///< TODO Explain what this means
-#define MOTOR_POS_RESET          10 ///< TODO Explain what this means
-#define MOTOR_POS_PID            11 ///< TODO Explain what this means
-#define MOTOR_POS_REF            12 ///< TODO Explain what this means
-#define MOTOR_VEL_PID            13 ///< TODO Explain what this means
-#define MOTOR_VEL_REF            14 ///< TODO Explain what this means
-#define MOTOR_CURRENT_PID        15 ///< TODO Explain what this means
-#define MOTOR_CURRENT_REF        16 ///< TODO Explain what this means
+#define MOTOR_CONSTRAINT          5 ///< TODO Explain what this means
+#define MOTOR_EMERGENCY           6 ///< TODO Explain what this means
+#define MOTOR_STATE               7 ///< TODO Explain what this means
+#define MOTOR_POS_RESET           8 ///< TODO Explain what this means
+#define MOTOR_POS_PID             9 ///< TODO Explain what this means
+#define MOTOR_POS_REF            10 ///< TODO Explain what this means
+#define MOTOR_VEL_PID            11 ///< TODO Explain what this means
+#define MOTOR_VEL_REF            12 ///< TODO Explain what this means
+#define MOTOR_CURRENT_PID        13 ///< TODO Explain what this means
+#define MOTOR_CURRENT_REF        14 ///< TODO Explain what this means
+#define MOTOR_TORQUE_REF         15 ///< TODO Explain what this means
 
 #endif	/* FRAMEMOTOR_H */
