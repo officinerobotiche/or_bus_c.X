@@ -34,7 +34,7 @@
  * - position [x, y, theta]
  * - space
  */
-typedef struct _coordinate {
+typedef struct __attribute__ ((__packed__)) _coordinate {
     float x;
     float y;
     float theta;
@@ -48,7 +48,7 @@ typedef struct _coordinate {
  * - wheelbase
  * - minimal space for odometry
  */
-typedef struct _parameter_unicycle {
+typedef struct __attribute__ ((__packed__)) _parameter_unicycle {
     float radius_r;
     float radius_l;
     float wheelbase;
@@ -61,7 +61,7 @@ typedef struct _parameter_unicycle {
  * - v = linear velocity
  * - w = angular velocity
  */
-typedef struct _velocity {
+typedef struct __attribute__ ((__packed__)) _velocity {
     float v;
     float w;
 } diff_drive_velocity_t;
