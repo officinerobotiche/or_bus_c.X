@@ -13,8 +13,8 @@
         <itemPath>includes/packet/frame_system.h</itemPath>
         <itemPath>includes/packet/frame_motor.h</itemPath>
         <itemPath>includes/packet/frame_navigation.h</itemPath>
-        <itemPath>includes/packet/frame_motion.h</itemPath>
         <itemPath>includes/packet/frame_peripherals.h</itemPath>
+        <itemPath>includes/packet/frame_diff_drive.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
