@@ -28,23 +28,62 @@ extern "C" {
 #define HASHMAP_PERIPHERALS          'P'
 
 /**
+ * This union converts a command message in a command and a number port if required
+ * - [#] maximum command 2^5 = 32
+ * - [#] maximum port 2^3 = 8
+ */
+typedef union _peripheral_gpio_map {
+
+    struct {
+        unsigned char command : 5;    ///< Peripheral commnad
+        unsigned char port : 3;       ///< Peripheral port
+    } bitset;
+    unsigned char message;
+} peripheral_gpio_map_t;
+
+typedef enum {
+    OUTPUT = 0,
+    INPUT  = 1,
+    ANALOG = 2        
+} peripheral_type_t;
+
+/**
+ * Number of the pin
+ */
+typedef uint8_t peripheral_gpio_number_t;
+#define LNG_PERIPHERAL_GPIO sizeof(peripheral_gpio_number_t)
+
+/**
+ * Value of the pin
+ */
+typedef uint16_t peripherals_gpio_t;
+#define LNG_PERIPHERALS_GPIO sizeof(peripherals_gpio_t)  
+
+/**
  * Configuration GPIO
  * - [#]     Number GPIO to set
  * - [0 - 2] Configuration GPIO [0 Read, 1 Write, 2 Analog (if available)]
  */
 typedef struct _peripherals_gpio_set {
-    char name;
-    uint8_t number;
-    int8_t type;
+    peripheral_gpio_number_t number;
+    peripheral_type_t type;
 } peripherals_gpio_set_t;
 #define LNG_PERIPHERALS_GPIO_SET sizeof(peripherals_gpio_set_t)   
 
+/**
+ * Send the configuration off all digital ports
+ * - [#]      Length of the port
+ * - [0bXXXX] Binary value of the port
+ */
 typedef struct _peripherals_gpio_port {
-    char name;
+    uint8_t len;
     int16_t port;
 } peripherals_gpio_port_t;
 #define LNG_PERIPHERALS_GPIO_PORT sizeof(peripherals_gpio_port_t)
 
+/**
+ * 
+ */
 typedef struct _peripherals_serial {
     uint8_t number;
     uint32_t baud;
@@ -56,19 +95,19 @@ typedef struct _peripherals_serial {
  * List of all system messages
  */
 typedef union _peripherals_gpio_frame {
+    peripheral_gpio_number_t number;
+    peripherals_gpio_t pin;
     peripherals_gpio_set_t set;
     peripherals_gpio_port_t port;
     peripherals_serial_t serial;
 } peripherals_gpio_frame_u;
 
 //Number association for standard messages
-#define PERIPHERALS_GPIO_SET       0
-#define PERIPHERALS_GPIO_ALL       1
-#define PERIPHERALS_GPIO           2
+#define PERIPHERALS_GPIO           0
+#define PERIPHERALS_GPIO_SET       1
+#define PERIPHERALS_GPIO_DIGITAL   2
 #define PERIPHERALS_SERIAL         3
-#define PERIPHERALS_TIMER          4
 
-    
 #ifdef	__cplusplus
 }
 #endif
