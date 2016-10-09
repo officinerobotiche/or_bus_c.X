@@ -77,7 +77,7 @@ typedef struct _peripherals_gpio_set {
  */
 typedef struct _peripherals_gpio_port {
     uint8_t len;
-    int16_t port;
+    peripherals_gpio_t port;
 } peripherals_gpio_port_t;
 #define LNG_PERIPHERALS_GPIO_PORT sizeof(peripherals_gpio_port_t)
 
