@@ -60,17 +60,6 @@ typedef uint16_t peripherals_gpio_t;
 #define LNG_PERIPHERALS_GPIO sizeof(peripherals_gpio_t)  
 
 /**
- * Configuration GPIO
- * - [#]     Number GPIO to set
- * - [0 - 2] Configuration GPIO [0 Read, 1 Write, 2 Analog (if available)]
- */
-typedef struct _peripherals_gpio_set {
-    peripheral_gpio_number_t number;
-    peripheral_type_t type;
-} peripherals_gpio_set_t;
-#define LNG_PERIPHERALS_GPIO_SET sizeof(peripherals_gpio_set_t)   
-
-/**
  * Send the configuration off all digital ports
  * - [#]      Length of the port
  * - [0bXXXX] Binary value of the port
@@ -80,6 +69,17 @@ typedef struct _peripherals_gpio_port {
     peripherals_gpio_t port;
 } peripherals_gpio_port_t;
 #define LNG_PERIPHERALS_GPIO_PORT sizeof(peripherals_gpio_port_t)
+
+/**
+ * Configuration GPIO
+ * - [0bXX...X]  Port GPIO to setup
+ * - [0 - 2]     Configuration GPIO [0 Read, 1 Write, 2 Analog (if available)]
+ */
+typedef struct _peripherals_gpio_set {
+    peripherals_gpio_port_t port;
+    peripheral_type_t type;
+} peripherals_gpio_set_t;
+#define LNG_PERIPHERALS_GPIO_SET sizeof(peripherals_gpio_set_t)
 
 /**
  * 
