@@ -42,9 +42,9 @@ typedef union _peripheral_gpio_map {
 } peripheral_gpio_map_t;
 
 typedef enum {
-    OUTPUT = 0,
-    INPUT  = 1,
-    ANALOG = 2        
+    PERIPHERAL_GPIO_OUTPUT = 0,
+    PERIPHERAL_GPIO_INPUT  = 1,
+    PERIPHERAL_GPIO_ANALOG = 2        
 } peripheral_type_t;
 
 /**
