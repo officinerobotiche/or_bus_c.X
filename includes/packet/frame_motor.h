@@ -167,6 +167,18 @@ typedef struct __attribute__ ((__packed__)) _motor_parameter {
 #define LNG_MOTOR_PARAMETER sizeof(motor_parameter_t)
 
 /**
+ * Message to launch the emergency stop motor
+ * - [#] Warning value max
+ * - [ms] Timeout to start emergency motor stop
+ * - [X] Auto recovery after emergency mode
+ */
+typedef struct __attribute__ ((__packed__)) _motor_safety {
+    motor_control_t warning_zone;
+    uint16_t timeout;
+    uint8_t  autorecovery;
+} motor_safety_t;
+#define LNG_MOTOR_SAFETY sizeof(motor_safety_t)
+/**
  * Message for emergency configuration
  * - [s]  Time to put velocity motor to zero
  * - [s]  Time to disable bridge after the speed reaches velocity is zero
@@ -208,6 +220,7 @@ typedef union _motor_frame {
     motor_emergency_t emergency;
     motor_pid_t pid;
     motor_control_t reference;
+    motor_safety_t safety;
 } motor_frame_u;
 
 //Numbers associated for motor messages to be used in the structure @ref motor_command_map_t as value for @ref command
@@ -227,5 +240,6 @@ typedef union _motor_frame {
 #define MOTOR_CURRENT_PID        13 ///< TODO Explain what this means
 #define MOTOR_CURRENT_REF        14 ///< TODO Explain what this means
 #define MOTOR_TORQUE_REF         15 ///< TODO Explain what this means
+#define MOTOR_SAFETY             16 ///< TODO Explain what this means
 
 #endif	/* FRAMEMOTOR_H */
