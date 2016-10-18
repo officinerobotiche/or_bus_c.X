@@ -26,12 +26,13 @@
 /**
  * Define to select state of control for single motor
  */
-#define STATE_CONTROL_EMERGENCY     -1  ///< Motors slow down to zero speed, then the bridge is turned off
-#define STATE_CONTROL_DISABLE       0   ///< Motors disabled
-#define STATE_CONTROL_POSITION      1   ///< Motors controlled in position
-#define STATE_CONTROL_VELOCITY      2   ///< Motors controlled in velocity
-#define STATE_CONTROL_CURRENT       3   ///< Motors controller in torque
-#define STATE_CONTROL_DIRECT        4   ///< Motors controlled using direct PWM signals
+#define STATE_CONTROL_SAFETY        -2  ///< Motor disabled for high current
+#define STATE_CONTROL_EMERGENCY     -1  ///< Motor slow down to zero speed, then the bridge is turned off
+#define STATE_CONTROL_DISABLE       0   ///< Motor disabled
+#define STATE_CONTROL_POSITION      1   ///< Motor controlled in position
+#define STATE_CONTROL_VELOCITY      2   ///< Motor controlled in velocity
+#define STATE_CONTROL_CURRENT       3   ///< Motor controller in torque
+#define STATE_CONTROL_DIRECT        4   ///< Motor controlled using direct PWM signals
 
 /**
  * This union converts a command message in a motor index and type of command
@@ -167,15 +168,15 @@ typedef struct __attribute__ ((__packed__)) _motor_parameter {
 #define LNG_MOTOR_PARAMETER sizeof(motor_parameter_t)
 
 /**
- * Message to launch the emergency stop motor
+ * Message to launch the safety stop motor
  * - [#] Warning value max
- * - [ms] Timeout to start emergency motor stop
- * - [X] Auto recovery after emergency mode
+ * - [ms] Timeout to start safety motor stop
+ * - [ms] Auto recovery after safety mode if 0 the auto recovery is disabled
  */
 typedef struct __attribute__ ((__packed__)) _motor_safety {
     motor_control_t warning_zone;
     uint16_t timeout;
-    uint8_t  autorecovery;
+    uint16_t  recovery_time;
 } motor_safety_t;
 #define LNG_MOTOR_SAFETY sizeof(motor_safety_t)
 /**
