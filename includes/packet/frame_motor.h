@@ -171,12 +171,12 @@ typedef struct __attribute__ ((__packed__)) _motor_parameter {
  * Message to launch the safety stop motor
  * - [#]  Warning value max
  * - [ms] Timeout to start safety motor stop
- * - [ms] Auto recovery after safety mode if 0 the auto recovery is disabled
+ * - [ms] Auto restore after safety mode if 0 the auto recovery is disabled
  */
 typedef struct __attribute__ ((__packed__)) _motor_safety {
     motor_control_t critical_zone;
     uint32_t timeout;
-    uint32_t recovery_time;
+    uint32_t autorestore;
 } motor_safety_t;
 #define LNG_MOTOR_SAFETY sizeof(motor_safety_t)
 /**
