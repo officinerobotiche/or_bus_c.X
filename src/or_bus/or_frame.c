@@ -80,25 +80,31 @@ bool parser(packet_t* receive_pkg, packet_information_t* list_to_send, size_t* l
     for (i = 0; i < receive_pkg->length; i += receive_pkg->buffer[i]) {
         packet_information_t info;
         memcpy((unsigned char*) &info, &receive_pkg->buffer[i], receive_pkg->buffer[i]);
-        int key = get_key(info.type);
-        if(key != -1) {
-            switch (info.option) {
-            case PACKET_DATA:
-                if(hash[key].reader.receive != NULL) {
-                    new_packet = hash[key].reader.receive(info.option, info.type, info.command, info.message);
-                    if(new_packet.option != PACKET_EMPTY){
-                        list_to_send[(*len)++] = new_packet;
+        // Alive frame
+        if(info.type == 0) {
+            new_packet = CREATE_PACKET_ACK(0, 0);
+            list_to_send[(*len)++] = new_packet;
+        } else {
+            int key = get_key(info.type);
+            if(key != -1) {
+                switch (info.option) {
+                case PACKET_DATA:
+                    if(hash[key].reader.receive != NULL) {
+                        new_packet = hash[key].reader.receive(info.option, info.type, info.command, info.message);
+                        if(new_packet.option != PACKET_EMPTY){
+                            list_to_send[(*len)++] = new_packet;
+                        }
                     }
-                }
-                break;
-            case PACKET_REQUEST:
-                if(hash[key].reader.send != NULL) {
-                    new_packet = hash[key].reader.send(info.option, info.type, info.command, info.message);
-                    if(new_packet.option != PACKET_EMPTY){
-                        list_to_send[(*len)++] = new_packet;
+                    break;
+                case PACKET_REQUEST:
+                    if(hash[key].reader.send != NULL) {
+                        new_packet = hash[key].reader.send(info.option, info.type, info.command, info.message);
+                        if(new_packet.option != PACKET_EMPTY){
+                            list_to_send[(*len)++] = new_packet;
+                        }
                     }
+                    break;
                 }
-                break;
             }
         }
     }
@@ -126,10 +132,10 @@ unsigned int encoder(packet_t *packet_send, packet_information_t *list_send, siz
 
 packet_t encoderSingle(packet_information_t send) {
     packet_t packet_send;
-    packet_send.length = send.length + 1;
+    packet_send.length = send.length;
     packet_buffer_u buffer_packet;
     buffer_packet.packet_information = send;
-    memcpy(&packet_send.buffer, &buffer_packet.buffer, buffer_packet.packet_information.length + 1);
+    memcpy(&packet_send.buffer, &buffer_packet.buffer, buffer_packet.packet_information.length);
     return packet_send;
 }
 
