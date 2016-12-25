@@ -4,16 +4,17 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <logicalFolder name="f2" displayName="or_bus" projectFiles="true">
+        <itemPath>includes/or_bus/or_frame.h</itemPath>
+        <itemPath>includes/or_bus/or_message.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="f1" displayName="packet" projectFiles="true">
         <itemPath>includes/packet/packet.h</itemPath>
         <itemPath>includes/packet/frame_system.h</itemPath>
         <itemPath>includes/packet/frame_motor.h</itemPath>
         <itemPath>includes/packet/frame_navigation.h</itemPath>
-        <itemPath>includes/packet/frame_motion.h</itemPath>
-      </logicalFolder>
-      <logicalFolder name="f2" displayName="serial" projectFiles="true">
-        <itemPath>includes/serial/or_frame.h</itemPath>
-        <itemPath>includes/serial/or_message.h</itemPath>
+        <itemPath>includes/packet/frame_peripherals.h</itemPath>
+        <itemPath>includes/packet/frame_diff_drive.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -23,9 +24,9 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <logicalFolder name="f1" displayName="serial" projectFiles="true">
-        <itemPath>src/serial/or_frame.c</itemPath>
-        <itemPath>src/serial/or_message.c</itemPath>
+      <logicalFolder name="f1" displayName="or_bus" projectFiles="true">
+        <itemPath>src/or_bus/or_message.c</itemPath>
+        <itemPath>src/or_bus/or_frame.c</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -36,6 +37,8 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>includes/packet</Elem>
+    <Elem>src/or_bus</Elem>
+    <Elem>includes/or_bus</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -47,8 +50,8 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>ICD3PlatformTool</platformTool>
         <languageToolchain>XC16</languageToolchain>
-        <languageToolchainVersion>1.24</languageToolchainVersion>
-        <platform>4</platform>
+        <languageToolchainVersion>1.30</languageToolchainVersion>
+        <platform>2</platform>
       </toolsSet>
       <compileType>
         <linkerTool>
@@ -62,6 +65,8 @@
           <parseOnProdLoad>false</parseOnProdLoad>
           <alternateLoadableFile></alternateLoadableFile>
         </loading>
+        <subordinates>
+        </subordinates>
       </compileType>
       <makeCustomizationType>
         <makeCustomizationPreStepEnabled>false</makeCustomizationPreStepEnabled>
@@ -76,16 +81,17 @@
         <property key="code-model" value="default"/>
         <property key="const-model" value="default"/>
         <property key="data-model" value="default"/>
+        <property key="disable-instruction-scheduling" value="false"/>
         <property key="enable-all-warnings" value="true"/>
         <property key="enable-ansi-std" value="false"/>
         <property key="enable-ansi-warnings" value="false"/>
         <property key="enable-fatal-warnings" value="false"/>
         <property key="enable-large-arrays" value="false"/>
-        <property key="enable-omit-frame-pointer" value="false"/>
+        <property key="enable-omit-frame-pointer" value="true"/>
         <property key="enable-procedural-abstraction" value="false"/>
         <property key="enable-short-double" value="false"/>
         <property key="enable-symbols" value="true"/>
-        <property key="enable-unroll-loops" value="false"/>
+        <property key="enable-unroll-loops" value="true"/>
         <property key="extra-include-directories" value=""/>
         <property key="isolate-each-function" value="false"/>
         <property key="keep-inline" value="false"/>
@@ -103,7 +109,7 @@
         <property key="oXC16gcc-sfr-warn" value="false"/>
         <property key="oXC16gcc-smar-io-lvl" value="1"/>
         <property key="oXC16gcc-smart-io-fmt" value=""/>
-        <property key="optimization-level" value="0"/>
+        <property key="optimization-level" value="1"/>
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
         <property key="preprocessor-macros" value=""/>
@@ -114,6 +120,25 @@
       <C30-AR>
         <property key="additional-options-chop-files" value="false"/>
       </C30-AR>
+      <C30-AS>
+        <property key="assembler-symbols" value=""/>
+        <property key="expand-macros" value="false"/>
+        <property key="extra-include-directories-for-assembler" value=""/>
+        <property key="extra-include-directories-for-preprocessor" value=""/>
+        <property key="false-conditionals" value="false"/>
+        <property key="keep-locals" value="false"/>
+        <property key="list-assembly" value="false"/>
+        <property key="list-section-info" value="false"/>
+        <property key="list-source" value="false"/>
+        <property key="list-symbols" value="false"/>
+        <property key="oXC16asm-extra-opts" value=""/>
+        <property key="oXC16asm-list-to-file" value="false"/>
+        <property key="omit-debug-dirs" value="false"/>
+        <property key="omit-forms" value="false"/>
+        <property key="preprocessor-macros" value=""/>
+        <property key="relax" value="false"/>
+        <property key="warning-level" value="emit-warnings"/>
+      </C30-AS>
       <C30-LD>
         <property key="additional-options-use-response-files" value="false"/>
         <property key="boot-eeprom" value="no_eeprom"/>
@@ -170,6 +195,7 @@
         <property key="output-file-format" value="elf"/>
         <property key="relaxed-math" value="false"/>
         <property key="save-temps" value="false"/>
+        <appendMe value="-merrata=psv_trap"/>
       </C30Global>
       <ICD3PlatformTool>
         <property key="ADC 1" value="true"/>
@@ -178,6 +204,7 @@
         <property key="DAC 1" value="true"/>
         <property key="DUAL COMPARATOR" value="true"/>
         <property key="ECAN" value="true"/>
+        <property key="Freeze All Other Peripherals" value="true"/>
         <property key="I2C1" value="true"/>
         <property key="INPUT CAPTURE 1" value="true"/>
         <property key="INPUT CAPTURE 2" value="true"/>
@@ -214,6 +241,11 @@
         <property key="memories.eeprom" value="true"/>
         <property key="memories.flashdata" value="true"/>
         <property key="memories.id" value="true"/>
+        <property key="memories.instruction.ram" value="true"/>
+        <property key="memories.instruction.ram.end"
+                  value="${memories.instruction.ram.end.value}"/>
+        <property key="memories.instruction.ram.start"
+                  value="${memories.instruction.ram.start.value}"/>
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.end" value="0x157ff"/>
         <property key="memories.programmemory.partition2" value="true"/>

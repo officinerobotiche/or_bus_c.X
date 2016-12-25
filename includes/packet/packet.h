@@ -39,10 +39,16 @@
 
 /*******/
 
-#include "packet/frame_motion.h"
+#include "packet/frame_diff_drive.h"
 #include "packet/frame_motor.h"
 #include "packet/frame_system.h"
 #include "packet/frame_navigation.h"
+#include "packet/frame_peripherals.h"
+
+/// Header packet
+#define PACKET_HEADER '#'
+/// Length header
+#define LNG_PACKET_HEADER 2
 
 /** Buffer dimensions */
 // Dimension for UART transmit buffer
@@ -59,6 +65,8 @@
 #define PACKET_ACK      'K'
 // NACK
 #define PACKET_NACK     'N'
+// Empty packet
+#define PACKET_EMPTY    'E'
 // Length of information packet (without data)
 #define LNG_HEAD_INFORMATION_PACKET 4
 
@@ -81,8 +89,9 @@
 typedef union _message_abstract {
     system_frame_u system;
     motor_frame_u motor;
-    motion_frame_u motion;
+    diff_drive_frame_u diff_drive;
     navigation_frame_u sensor;
+    peripherals_gpio_frame_u gpio;
 } message_abstract_u;
 
 /**

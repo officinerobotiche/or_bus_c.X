@@ -24,9 +24,9 @@ extern "C" {
 
 #include "packet/packet.h"
 
-#define HEADER_SYNC '#'
-#define HEADER_ASYNC '@'
-#define HEAD_PKG 2
+/******************************************************************************/
+/* System Level #define Macros                                                */
+/******************************************************************************/
 
 #define ERROR_FRAMMING -1   //Framing Error bit
 #define ERROR_OVERRUN -2    //overrun error
@@ -41,14 +41,17 @@ extern "C" {
 #define ERROR_PKG -10
 #define ERROR_CREATE_PKG -11
 
-    /*************************************************************************/
-    /* System Function Prototypes                                            */
-    /*************************************************************************/
+//#define PACKET_EMPTY
+
+/*************************************************************************/
+/* System Function Prototypes                                            */
+/*************************************************************************/
 
     /**
      * Init buffer serial_error to zero
+     * @param packet_rx Packet received 
      */
-    void init_buff_serial_error();
+    void orb_message_init(packet_t* packet_rx);
 
     /**
      * Function called on _U1RXInterrupt for decode packet

@@ -22,6 +22,9 @@
 extern "C" {
 #endif
 
+//Name for HASHMAP with information about standard messages
+#define HASHMAP_NAVIGATION 'N'
+    
 #define SENSOR_NUMBER_INFRARED 7
 #define SENSOR_BUFFER_AUTOSEND 10
 
@@ -78,20 +81,6 @@ typedef union _navigation_frame {
 #define SENSOR_PARAMETER 3
 #define SENSOR_AUTOSEND 4
 #define SENSOR_ENABLE 5
-
-//Name for HASHMAP with information about standard messages
-#define HASHMAP_NAVIGATION 'N'
-#define HASHMAP_NAVIGATION_NUMBER 16
-
-/**
- * Table with conversion number message in a length for data messages
- */
-#define HASHMAP_NAVIGATION_INITIALIZE hashmap_navigation[SENSOR] = LNG_SENSOR;                     \
-                                      hashmap_navigation[SENSOR_INFRARED] = LNG_SENSOR_INFRARED;   \
-                                      hashmap_navigation[SENSOR_HUMIDITY] = LNG_SENSOR_HUMIDITY;   \
-                                      hashmap_navigation[SENSOR_PARAMETER] = LNG_SENSOR_PARAMETER; \
-                                      hashmap_navigation[SENSOR_AUTOSEND] = LNG_SENSOR_AUTOSEND;   \
-                                      hashmap_navigation[SENSOR_ENABLE] = LNG_SENSOR_ENABLE;
 
 #ifdef	__cplusplus
 }
