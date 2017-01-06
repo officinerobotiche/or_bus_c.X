@@ -71,14 +71,14 @@ extern "C" {
     /**
      * @brief Initialization OS_BUS controller
      * @param or_bus The OR_BUS controller
-     * @param buffRx The receiver buffer 
      * @param buffTx The transmitter buffer
+     * @param buffRx The receiver buffer 
      * @param rx_size the size of received buffer
      * @param obj The object to recall after a complete decode
      * @param parser The callback to recall
      */
     void OR_BUS_init(OR_BUS_t *or_bus,
-            unsigned char *buffRx, unsigned char *buffTx,
+            unsigned char *buffTx, unsigned char *buffRx,
             unsigned int rx_size, void *obj, OR_BUS_parser parser);
     /**
      * @brief Decode a OR_BUS message

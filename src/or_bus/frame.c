@@ -19,138 +19,123 @@
 /* Files to Include                                                           */
 /******************************************************************************/
 
-#include <stdint.h>        /* Includes uint16_t definition   */
-#include <stdbool.h>       /* Includes true/false definition */
-#include <string.h>
-
 #include "or_bus/frame.h"
-#include "or_bus/bus.h"
-
-#define HASHMAP_NUMBER 4
-
-typedef struct _frame_read {
-    frame_reader_t send;
-    frame_reader_t receive;
-} frame_read_t;
-
-typedef struct _hashmap {
-    frame_read_t reader;
-    unsigned char name;
-} hashmap;
-
-hashmap hash[HASHMAP_NUMBER];
-unsigned short counter = 0;
 
 /******************************************************************************/
 /* Parsing functions                                                          */
 /******************************************************************************/
-
-void orb_frame_init() {
-    unsigned short i;
-    for(i = 0; i < HASHMAP_NUMBER; ++i) {
-        hash[i].reader.send = NULL;
-        hash[i].reader.receive = NULL;
-        hash[i].name = 0;
-    }
-}
-
-void set_frame_reader(unsigned char hashmap, frame_reader_t send, frame_reader_t receive) {
-    frame_read_t frame;
-    frame.send = send;
-    frame.receive = receive;
-    
-    hash[counter].name = hashmap;
-    hash[counter].reader = frame;
-    counter++;
-}
-
-int get_key(unsigned char hashmap) {
-    int i;
-    for(i = 0; i < HASHMAP_NUMBER; ++i) {
-        if(hashmap == hash[i].name) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-bool parser(packet_t* receive_pkg, packet_information_t* list_to_send, size_t* len) {
-    unsigned int i;
-    packet_information_t new_packet;
-    for (i = 0; i < receive_pkg->length; i += receive_pkg->buffer[i]) {
-        packet_information_t info;
-        memcpy((unsigned char*) &info, &receive_pkg->buffer[i], receive_pkg->buffer[i]);
-        // Alive frame
-        if(info.type == 0) {
-            new_packet = CREATE_PACKET_ACK(0, 0);
-            list_to_send[(*len)++] = new_packet;
-        } else {
-            int key = get_key(info.type);
-            if(key != -1) {
-                switch (info.option) {
-                case PACKET_DATA:
-                    if(hash[key].reader.receive != NULL) {
-                        new_packet = hash[key].reader.receive(info.option, info.type, info.command, info.message);
-                        if(new_packet.option != PACKET_EMPTY){
-                            list_to_send[(*len)++] = new_packet;
-                        }
-                    }
-                    break;
-                case PACKET_REQUEST:
-                    if(hash[key].reader.send != NULL) {
-                        new_packet = hash[key].reader.send(info.option, info.type, info.command, info.message);
-                        if(new_packet.option != PACKET_EMPTY){
-                            list_to_send[(*len)++] = new_packet;
-                        }
-                    }
-                    break;
+/**
+ * In a packet we have more frame. A typical data packet have this structure:
+ * -------------------------- ---------------------------- --------------------
+ * | LNG | TYPE | HASH | CMD | --- DATA --- | ... | LNG | TYPE | HASH | CMD | .
+ * -------------------------- ---------------------------- --------------------
+ *   [0]    [1]    [2]   [3]      [4]...[n]   ...   [i]   [i+1]  [i+2]  [i+3]
+ * We have this struct of message
+ * [i]   Length
+ * [i+1] Type
+ * [i+2] Hash
+ * [i+3] Command
+ * [i+4]...[i+n] Message
+ * @param obj The O
+ * @param buffer
+ * @param size
+ */
+inline void OR_BUS_FRAME_decoder(void* obj, unsigned char *buffer, size_t size) {
+    OR_BUS_FRAME_t *frame = (OR_BUS_FRAME_t*) obj;
+    unsigned int i, IdxHash;
+    // In the first place is located the size of the frame message
+    for (i = 0; i < size; i += buffer[i]) {
+        // Find the associated callback
+        for (IdxHash = 0; IdxHash < OR_BUS_FRAME_LNG_HASH_DECODER; ++IdxHash) {
+            // Run the associated callback
+            if (frame->hash[IdxHash].pointer != NULL) {
+                // Check the type
+                if (frame->hash[IdxHash].hash == buffer[i + 2]) {
+                    // Launch the callback
+                    frame->hash[IdxHash].pointer(frame->hash[IdxHash].obj, 
+                            buffer[i + 1], buffer[i + 3], 
+                            (OR_BUS_FRAME_packet_t*) & buffer[i + 4]);
                 }
             }
         }
     }
-    return true;
+    // Build the message and send
+    OR_BUS_FRAME_build(frame);
 }
 
-unsigned int encoder(packet_t *packet_send, packet_information_t *list_send, size_t len) {
-    int i;
-    packet_send->length = 0;
-    for (i = 0; i < len; ++i) {
-
-        packet_buffer_u buffer_packet;
-        buffer_packet.packet_information = list_send[i];
-
-        // Check if the size can enter in the buffer
-        if(packet_send->length + buffer_packet.packet_information.length > MAX_BUFF_TX)
-            break;
-
-        memcpy(&packet_send->buffer[packet_send->length], &buffer_packet.buffer, buffer_packet.packet_information.length);
-
-        packet_send->length += buffer_packet.packet_information.length;
+void OR_BUS_FRAME_init(OR_BUS_FRAME_t *frame, unsigned char *buff) {
+    unsigned int i;
+    // Initialization hash map controller
+    for (i = 0; i < OR_BUS_FRAME_LNG_HASH_DECODER; ++i) {
+        frame->hash[i].hash = 0;
+        frame->hash[i].pointer = NULL;
+        frame->hash[i].obj = NULL;
     }
-    return i;
+    // Initialization buffer
+    frame->buff = buff;
+    // Reset counter messages
+    frame->counter = 0;
+    // Initialization over BUS
+    OR_BUS_init(&frame->or_bus, &frame->buffTx[0], &frame->buffRx[0], 
+            OR_BUS_FRAME_LNG_FRAME, (void *)frame, &OR_BUS_FRAME_decoder);
 }
 
-packet_t encoderSingle(packet_information_t send) {
-    packet_t packet_send;
-    packet_send.length = send.length;
-    packet_buffer_u buffer_packet;
-    buffer_packet.packet_information = send;
-    memcpy(&packet_send.buffer, &buffer_packet.buffer, buffer_packet.packet_information.length);
-    return packet_send;
-}
-
-packet_information_t createPacket(unsigned char command, unsigned char option, unsigned char type, message_abstract_u * packet, size_t len) {
-    packet_information_t information;
-    information.command = command;
-    information.option = option;
-    information.type = type;
-    information.length = LNG_HEAD_INFORMATION_PACKET + len;
-    if (packet != NULL) {
-        memcpy(&information.message, packet, len);
+bool OR_BUS_FRAME_register(OR_BUS_FRAME_t *frame, 
+        OR_BUS_FRAME_hashmap_t hashmap, OR_BUS_FRAME_parser cb, void *obj) {
+    unsigned int i;
+    // Find an available hash map
+    for(i = 0; i < OR_BUS_FRAME_LNG_HASH_DECODER; ++i) {
+        if(frame->hash[i].pointer == NULL) {
+            frame->hash[i].hash = hashmap;
+            frame->hash[i].pointer = cb;
+            frame->hash[i].obj = obj;
+            return true;
+        }
     }
-    return information;
+    return false;
+}
+/**
+ * 
+ * @param frame
+ * @param type
+ * @param hashmap
+ * @param command
+ * @param packet
+ * @param length
+ */
+void OR_BUS_FRAME_add(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_type_t type, 
+        OR_BUS_FRAME_hashmap_t hashmap, OR_BUS_FRAME_command_t command, 
+        OR_BUS_FRAME_packet_t* packet, size_t length) {
+    // Copy all frame information in frames buffer
+    frame->buff[frame->counter]     = OR_BUS_LNG_PACKET_HEAD + length;
+    frame->buff[frame->counter + 1] = type;
+    frame->buff[frame->counter + 2] = hashmap;
+    frame->buff[frame->counter + 3] = command;
+    // Copy the message
+    if (type == OR_BUS_FRAME_DATA) {
+        memcpy(&frame->buff[frame->counter + OR_BUS_LNG_PACKET_HEAD], packet, length);
+    }
+    // Update counter size message
+    frame->counter += OR_BUS_LNG_PACKET_HEAD + length;
 }
 
-inline packet_information_t createDataPacket(unsigned char command, unsigned char type, message_abstract_u * packet, size_t len) {
-    return createPacket(command, PACKET_DATA, type, packet, len);
+void OR_BUS_FRAME_add_data(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_hashmap_t hashmap, 
+        OR_BUS_FRAME_command_t command, OR_BUS_FRAME_packet_t* packet, size_t length) {
+    OR_BUS_FRAME_add(frame, OR_BUS_FRAME_DATA, hashmap, command, packet, length);
+}
+
+void OR_BUS_FRAME_add_request(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_type_t type, 
+        OR_BUS_FRAME_hashmap_t hashmap, OR_BUS_FRAME_command_t command) {
+    OR_BUS_FRAME_add(frame, type, hashmap, command, NULL, 0);
+}
+
+bool OR_BUS_FRAME_build(OR_BUS_FRAME_t *frame) {
+    // Check are required to sent a message
+    if(frame->counter > 0) {
+        OR_BUS_build(&frame->or_bus, frame->buff, frame->counter);
+        // reset the frame counter
+        frame->counter = 0;
+        return true;
+    } else 
+        return false;
 }

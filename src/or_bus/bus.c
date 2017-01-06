@@ -32,7 +32,7 @@ OR_BUS_State_t OR_BUS_header(void *or_bus, unsigned char rxchar);
 /******************************************************************************/
 
 void OR_BUS_init(OR_BUS_t *or_bus, 
-            unsigned char *buffRx, unsigned char *buffTx, 
+            unsigned char *buffTx, unsigned char *buffRx, 
             unsigned int rx_size, void *obj, OR_BUS_parser parser) {
     // Initialization RX buffer
     or_bus->rx.buff = buffRx;

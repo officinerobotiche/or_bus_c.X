@@ -22,101 +22,118 @@
 extern "C" {
 #endif
 
-#include "packet/packet.h"
-#include <stdint.h>          /* For uint16_t definition                       */
-#include <stdbool.h>         /* For true/false definition                     */
-#include <string.h>
+#include "or_bus/bus.h"
+#include "packet/frame_diff_drive.h"
+#include "packet/frame_motor.h"
+#include "packet/frame_system.h"
+#include "packet/frame_navigation.h"
+#include "packet/frame_peripherals.h"
+      
+#ifndef OR_BUS_FRAME_LNG_HASH_DECODER
+#define OR_BUS_FRAME_LNG_HASH_DECODER 5
+#endif
     
 /******************************************************************************/
 /* System Level #define Macros                                                */
 /******************************************************************************/
-    // Dimension of list messages to decode in a packet
-    #define BUFFER_LIST_PARSING 10
-    /// function to decode packet
-    typedef packet_information_t (*frame_reader_t)(unsigned char, unsigned char, unsigned char, message_abstract_u);
     
-    #define CREATE_PACKET_DATA(cmd, type, data) createPacket((cmd), PACKET_DATA, (type), &(data), sizeof(data))
-    #define CREATE_PACKET_RESPONSE(cmd, type, x) createPacket((cmd), (x), (type), NULL, 0)
-    #define CREATE_PACKET_ACK(cmd,type) CREATE_PACKET_RESPONSE(cmd, type, PACKET_ACK)
-    #define CREATE_PACKET_NACK(cmd,type) CREATE_PACKET_RESPONSE(cmd, type, PACKET_NACK)
-    #define CREATE_PACKET_EMPTY CREATE_PACKET_RESPONSE(0, 0, PACKET_EMPTY)
+// Length of information packet (without data)
+#define OR_BUS_LNG_PACKET_HEAD 4
+    /**
+     * Definition of type of frame message required
+     */
+    typedef enum {
+        OR_BUS_FRAME_NACK = 'N',
+        OR_BUS_FRAME_ACK = 'A',
+        OR_BUS_FRAME_DATA = 'D',
+        OR_BUS_FRAME_REQUEST = 'R',
+        OR_BUS_FRAME_EMPTY = 'E'
+    } OR_BUS_FRAME_type_t;
+    /**
+     * The hash map message
+     */
+    typedef char OR_BUS_FRAME_hashmap_t;
+    /**
+     * The Command received
+     */
+    typedef char OR_BUS_FRAME_command_t;
+    /**
+     * Union for conversion all type of packets in a standard packets
+     */
+    typedef union _OR_BUS_FRAME_packet {
+        system_frame_u system;
+        motor_frame_u motor;
+        diff_drive_frame_u diff_drive;
+        navigation_frame_u sensor;
+        peripherals_gpio_frame_u gpio;
+    } OR_BUS_FRAME_packet_t;
+#define OR_BUS_FRAME_LNG_PACKET sizeof(OR_BUS_FRAME_packet_t)
+    
+    typedef void (*OR_BUS_FRAME_parser)(void* obj, OR_BUS_FRAME_type_t, OR_BUS_FRAME_command_t, OR_BUS_FRAME_packet_t*);
+    
+    typedef struct _over_frame_hash {
+        OR_BUS_FRAME_hashmap_t hash;
+        OR_BUS_FRAME_parser pointer;
+        void* obj;
+    } over_frame_hash_t;
+    
+#define OR_BUS_FRAME_LNG_FRAME (4 * (OR_BUS_LNG_PACKET_HEAD + OR_BUS_FRAME_LNG_PACKET))
+    
+    typedef struct _over_frame {
+        OR_BUS_t or_bus;
+        unsigned char buffTx[OR_BUS_FRAME_LNG_FRAME];
+        unsigned char buffRx[OR_BUS_FRAME_LNG_FRAME];
+        unsigned char *buff;
+        unsigned int counter;
+        over_frame_hash_t hash[OR_BUS_FRAME_LNG_HASH_DECODER];
+    } OR_BUS_FRAME_t;
 
 /******************************************************************************/
 /* System Function Prototypes                                                 */
 /******************************************************************************/
-    /**
-     * Init hashmap for decode messages
-     * Load all hashmaps from packet/packet.h and packet/unav.h
-     */
-    void orb_frame_init();
 
-    void set_frame_reader(unsigned char hash, frame_reader_t send, frame_reader_t receive);
 
     /**
-     * In a packet we have more messages. A typical data packet
-     * have this struct:
-     * -------------------------- ---------------------------- -----------------------
-     * | Length | CMD | DATA ... | Length | CMD | INFORMATION |Length | CMD | ... ... |
-     * -------------------------- ---------------------------- -----------------------
-     *    1        2 -> length    length+1 length+2 length+3   ...
-     * It is possible to have different type of messages:
-     * * Message with data (D)
-     * * Message witn state information:
-     *      * (R) request data
-     *      * (A) ack
-     *      * (N) nack
-     * We have tre parts to elaborate and send a new packet (if required)
-     * 1. [SAVING] The first part of this function split packets in a
-     * list of messages to compute.
-     * 2. [COMPUTE] If message have a data in tail, start compute and return a
-     * new ACK or NACK message to append in a new packet. If is a request
-     * message (R), the new message have in tail the data required.
-     * 3. [SEND] Encoding de messages and transform in a packet to send.
-     * *This function is a long function*
-     * @return time to compute parsing packet
+     * 
+     * @param frame
+     * @param buff
      */
-    bool parser(packet_t* receive_pkg, packet_information_t* list_to_send, size_t* len);
-
+    void OR_BUS_FRAME_init(OR_BUS_FRAME_t *frame, unsigned char *buff);
     /**
-     * Get a list of messages to transform in a packet for serial communication.
-     * This function create a new packet and copy with UNION buffer_packet_u and
-     * finally put chars conversion in to buffer.
-     * @param list_send pointer of list with messages to send
-     * @param len length of list_send list
-     * @return a packet_t with all data to send
+     * 
+     * @param frame
+     * @param hashmap
+     * @param cb
+     * @param obj
+     * @return 
      */
-    unsigned int encoder(packet_t *packet, packet_information_t *list_send, size_t len);
-
+    bool OR_BUS_FRAME_register(OR_BUS_FRAME_t *frame, 
+            OR_BUS_FRAME_hashmap_t hashmap, OR_BUS_FRAME_parser cb, void *obj);
     /**
-     * Get an information_packet to convert in a buffer of char to put
-     * in a packet_t data.
-     * @param list_send information_packet_t to send
-     * @return a packet_t with data to send
+     * 
+     * @param frame
+     * @param hashmap
+     * @param command
+     * @param packet
+     * @param length
      */
-    packet_t encoderSingle(packet_information_t list_send);
-
+    void OR_BUS_FRAME_add_data(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_hashmap_t hashmap, 
+        OR_BUS_FRAME_command_t command, OR_BUS_FRAME_packet_t* packet, size_t length);
     /**
-     * Create a information_packet_t associated a message listed in
-     * abstract_message_t (see packet/packet.h for all listed messages).
-     * Finally add information about message.
-     * @param command type of message to send
-     * @param option information about this message
-     * @param type type of message
-     * @param packet abstract_message to convert in a information_packet
-     * @param size of packet
-     * @return information_packet ready to send
+     * 
+     * @param frame
+     * @param type
+     * @param hashmap
+     * @param command
      */
-    packet_information_t createPacket(unsigned char command, unsigned char option, unsigned char type, message_abstract_u * packet, size_t len);
+    void OR_BUS_FRAME_add_request(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_type_t type, 
+        OR_BUS_FRAME_hashmap_t hashmap, OR_BUS_FRAME_command_t command);
     /**
-     * Create an information packet for a message with data (D).
-     * This function use createPacket for create information_packet
-     * @param command information about this message
-     * @param type type of command to send
-     * @param packet abstract_message to convert in a information_packet
-     * @param size of packet
-     * @return information_packet ready to send
+     * 
+     * @param frame
+     * @return 
      */
-    inline packet_information_t createDataPacket(unsigned char command, unsigned char type, message_abstract_u * packet, size_t len);
+    bool OR_BUS_FRAME_build(OR_BUS_FRAME_t *frame);
 
 #ifdef	__cplusplus
 }
