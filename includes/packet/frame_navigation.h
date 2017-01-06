@@ -21,10 +21,22 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-
+    
+/******************************************************************************/
+/* Definition commands                                                        */
+/******************************************************************************/
 //Name for HASHMAP with information about standard messages
 #define HASHMAP_NAVIGATION 'N'
-    
+//Number association for standard messages
+#define SENSOR 0
+#define SENSOR_INFRARED 1
+#define SENSOR_HUMIDITY 2
+#define SENSOR_PARAMETER 3
+#define SENSOR_AUTOSEND 4
+#define SENSOR_ENABLE 5
+/******************************************************************************/
+/* Definition messages                                                        */
+/******************************************************************************/
 #define SENSOR_NUMBER_INFRARED 7
 #define SENSOR_BUFFER_AUTOSEND 10
 
@@ -60,8 +72,6 @@ typedef struct _autosend {
 
 typedef uint8_t sensor_enable_t;
 #define LNG_SENSOR_ENABLE sizeof(sensor_enable_t)
-
-
 /**
  * List of all navigation messages
  */
@@ -73,14 +83,6 @@ typedef union _navigation_frame {
     sensor_autosend_t autosend;
     sensor_enable_t enable;
 } navigation_frame_u;
-
-//Number association for standard messages
-#define SENSOR 0
-#define SENSOR_INFRARED 1
-#define SENSOR_HUMIDITY 2
-#define SENSOR_PARAMETER 3
-#define SENSOR_AUTOSEND 4
-#define SENSOR_ENABLE 5
 
 #ifdef	__cplusplus
 }

@@ -20,15 +20,30 @@
 
 #include <stdint.h>
 
+/******************************************************************************/
+/* Definition commands                                                        */
+/******************************************************************************/
 //Name for HASHMAP with information about motion messages
 #define HASHMAP_DIFF_DRIVE 'M'
-
+//Numbers associated for motion messages
+#define DIFF_DRIVE_COORDINATE 0
+#define DIFF_DRIVE_VEL 1
+#define DIFF_DRIVE_PARAMETER_UNICYCLE 2
+#define DIFF_DRIVE_STATE 3
+#define DIFF_DRIVE_VEL_REF 4
+/******************************************************************************/
+/* Definition messages                                                        */
+/******************************************************************************/
 /**
  * Define to select high state of control
  */
 #define STATE_CONTROL_HIGH_DISABLE 0
 #define STATE_CONTROL_HIGH_VELOCITY 1
-
+/**
+ * Message for read and write state high level control
+ */
+typedef int8_t diff_drive_state_t;
+#define LNG_DIFF_DRIVE_STATE sizeof(diff_drive_state_t)
 /**
  * Definition for coordinate robot:
  * - position [x, y, theta]
@@ -41,7 +56,6 @@ typedef struct __attribute__ ((__packed__)) _coordinate {
     float space;
 } diff_drive_coordinate_t;
 #define LNG_DIFF_DRIVE_COORDINATE sizeof(diff_drive_coordinate_t)
-
 /**
  * Parameters definition for unicycle robot:
  * - radius (left and right)
@@ -55,7 +69,6 @@ typedef struct __attribute__ ((__packed__)) _parameter_unicycle {
     float sp_min;
 } diff_drive_parameter_unicycle_t;
 #define LNG_DIFF_DRIVE_PARAMETER_UNICYCLE sizeof(diff_drive_parameter_unicycle_t)
-
 /**
  * Message for read and write velocity in a unicycle robot:
  * - v = linear velocity
@@ -66,13 +79,6 @@ typedef struct __attribute__ ((__packed__)) _velocity {
     float w;
 } diff_drive_velocity_t;
 #define LNG_DIFF_DRIVE_VELOCITY sizeof(diff_drive_velocity_t)
-
-/**
- * Message for read and write state high level control
- */
-typedef int8_t diff_drive_state_t;
-#define LNG_DIFF_DRIVE_STATE sizeof(diff_drive_state_t)
-
 /**
  * List of all motion messages
  */
@@ -82,13 +88,6 @@ typedef union _motion_frame {
     diff_drive_velocity_t velocity;
     diff_drive_state_t state;
 } diff_drive_frame_u;
-
-//Numbers associated for motion messages
-#define DIFF_DRIVE_COORDINATE 0
-#define DIFF_DRIVE_VEL 1
-#define DIFF_DRIVE_PARAMETER_UNICYCLE 2
-#define DIFF_DRIVE_STATE 3
-#define DIFF_DRIVE_VEL_REF 4
                                     
 #endif	/* FRAMEDIFFDRIVE_H */
 

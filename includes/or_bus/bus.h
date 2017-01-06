@@ -33,7 +33,9 @@ extern "C" {
     /// Header packet
 #define OR_BUS_PACKET_HEADER '#'
     /// Length header
-#define OR_BUS_LNG_PACKET_HEADER 2
+#define OR_BUS_LNG_HEADER 2
+// Position of length    
+#define OR_BUS_POSITION_LNG  1
 
     typedef enum {
         OR_BUS_ERROR_CKS = -3,
@@ -93,17 +95,26 @@ extern "C" {
      * ------------------------------------------------
      * | HEADER | LENGTH |       DATA           | CKS |
      * ------------------------------------------------
-     *     1        2             3 -> n          n+1
+     *     0        1             2 -> n-1          n
      *
      * Only element of packet have a relative function to decode
-     * 1) Header -> pkg_header
-     * 2) Length -> pkg_length
-     * 3 to n+1) Data -> pkg_data
+     * 0) Header -> pkg_header
+     * 1) Length -> pkg_length
+     * 2 to n) Data -> pkg_data
      * @param or_bus The OR_BUS controller
      * @param buff The buffer to send
      * @param length The length of the buffer
      */
     void OR_BUS_build(OR_BUS_t *or_bus, unsigned char *buff, size_t length);
+    /**
+     * Function to evaluate checksum. Count all bytes in a Buffer and return
+     * number for checksum.
+     * @param Buffer It's a buffer to sum all bytes
+     * @param FirstIndx The number for first element buffer to count all bytes.
+     * @param LastIndx The number for last element buffer.
+     * @return number evaluated for sum bytes
+     */
+    unsigned char OR_BUS_pkg_checksum(volatile unsigned char* Buffer, int FirstIndx, int LastIndx);
 
 #ifdef	__cplusplus
 }

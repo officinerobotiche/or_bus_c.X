@@ -24,9 +24,11 @@ extern "C" {
     
 #include <stdint.h>
 
+/******************************************************************************/
+/* Definition commands                                                        */
+/******************************************************************************/
 //Name for HASHMAP with information about standard messages
 #define HASHMAP_PERIPHERALS          'P'
-
 /**
  * This union converts a command message in a command and a number port if required
  * - [#] maximum command 2^5 = 32
@@ -40,25 +42,30 @@ typedef union _peripheral_gpio_map {
     } bitset;
     unsigned char message;
 } peripheral_gpio_map_t;
+//Number association for standard messages
+#define PERIPHERALS_GPIO           0
+#define PERIPHERALS_GPIO_SET       1
+#define PERIPHERALS_GPIO_DIGITAL   2
+#define PERIPHERALS_SERIAL         3
+/******************************************************************************/
+/* Definition messages                                                        */
+/******************************************************************************/
 
 typedef enum {
     PERIPHERAL_GPIO_INPUT  = 1,
     PERIPHERAL_GPIO_OUTPUT = 0,
     PERIPHERAL_GPIO_ANALOG = 2        
 } peripheral_type_t;
-
 /**
  * Number of the pin
  */
 typedef uint8_t peripheral_gpio_number_t;
 #define LNG_PERIPHERAL_GPIO sizeof(peripheral_gpio_number_t)
-
 /**
  * Value of the pin
  */
 typedef uint16_t peripherals_gpio_t;
 #define LNG_PERIPHERALS_GPIO sizeof(peripherals_gpio_t)  
-
 /**
  * Send the configuration off all digital ports
  * - [#]      Length of the port
@@ -69,7 +76,6 @@ typedef struct _peripherals_gpio_port {
     peripherals_gpio_t port;
 } peripherals_gpio_port_t;
 #define LNG_PERIPHERALS_GPIO_PORT sizeof(peripherals_gpio_port_t)
-
 /**
  * Configuration GPIO
  * - [0bXX...X]  Port GPIO to setup
@@ -80,7 +86,6 @@ typedef struct _peripherals_gpio_set {
     peripheral_type_t type;
 } peripherals_gpio_set_t;
 #define LNG_PERIPHERALS_GPIO_SET sizeof(peripherals_gpio_set_t)
-
 /**
  * 
  */
@@ -90,7 +95,6 @@ typedef struct _peripherals_serial {
     int16_t byte_conf;
 } peripherals_serial_t;
 #define LNG_PERIPHERALS_SERIAL sizeof(peripherals_serial_t)
-
 /**
  * List of all system messages
  */
@@ -101,12 +105,6 @@ typedef union _peripherals_gpio_frame {
     peripherals_gpio_port_t port;
     peripherals_serial_t serial;
 } peripherals_gpio_frame_u;
-
-//Number association for standard messages
-#define PERIPHERALS_GPIO           0
-#define PERIPHERALS_GPIO_SET       1
-#define PERIPHERALS_GPIO_DIGITAL   2
-#define PERIPHERALS_SERIAL         3
 
 #ifdef	__cplusplus
 }

@@ -81,9 +81,6 @@ extern "C" {
     
     typedef struct _over_frame {
         OR_BUS_t or_bus;
-        unsigned char buffTx[OR_BUS_FRAME_LNG_FRAME];
-        unsigned char buffRx[OR_BUS_FRAME_LNG_FRAME];
-        unsigned char *buff;
         unsigned int counter;
         over_frame_hash_t hash[OR_BUS_FRAME_LNG_HASH_DECODER];
     } OR_BUS_FRAME_t;
@@ -91,47 +88,50 @@ extern "C" {
 /******************************************************************************/
 /* System Function Prototypes                                                 */
 /******************************************************************************/
-
-
     /**
-     * 
-     * @param frame
-     * @param buff
+     * @brief Initialization OR BUS controller with frame decoder
+     * @param frame The frame controller
+     * @param buffTx The transmitter buffer
+     * @param buffRx The receiver buffer 
+     * @param rx_size the size of received buffer
      */
-    void OR_BUS_FRAME_init(OR_BUS_FRAME_t *frame, unsigned char *buff);
+    void OR_BUS_FRAME_init(OR_BUS_FRAME_t *frame, unsigned char *buffTx, 
+        unsigned char *buffRx, unsigned int rx_size);
     /**
-     * 
-     * @param frame
-     * @param hashmap
-     * @param cb
-     * @param obj
-     * @return 
+     * @brief Register a type of hash map.
+     * @param frame The frame controller
+     * @param hashmap the type of hash map
+     * @param cb The callback lo launch after decoding
+     * @param obj The object to launch inside the callback
+     * @return If is available hash map space return true
      */
     bool OR_BUS_FRAME_register(OR_BUS_FRAME_t *frame, 
             OR_BUS_FRAME_hashmap_t hashmap, OR_BUS_FRAME_parser cb, void *obj);
     /**
-     * 
-     * @param frame
-     * @param hashmap
-     * @param command
-     * @param packet
-     * @param length
+     * @brief Add data in a frame message inside the buffer.
+     * @param frame The frame controller
+     * @param hashmap The associated hash map
+     * @param command The command request
+     * @param packet The packet to add
+     * @param length The length of the packet
+     * @return If available space in the buffer return true
      */
-    void OR_BUS_FRAME_add_data(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_hashmap_t hashmap, 
+    bool OR_BUS_FRAME_add_data(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_hashmap_t hashmap, 
         OR_BUS_FRAME_command_t command, OR_BUS_FRAME_packet_t* packet, size_t length);
     /**
-     * 
-     * @param frame
-     * @param type
-     * @param hashmap
-     * @param command
+     * @brief Add a request frame message inside the buffer.
+     * @param frame The frame controller
+     * @param type The type of message
+     * @param hashmap The associated hash map
+     * @param command The command request
+     * @return If available space in the buffer return true
      */
-    void OR_BUS_FRAME_add_request(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_type_t type, 
+    bool OR_BUS_FRAME_add_request(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_type_t type, 
         OR_BUS_FRAME_hashmap_t hashmap, OR_BUS_FRAME_command_t command);
     /**
-     * 
-     * @param frame
-     * @return 
+     * @brief Build a OR BUS Frame packet.
+     * @param frame The frame controller
+     * @return return true if is available some frame to send
      */
     bool OR_BUS_FRAME_build(OR_BUS_FRAME_t *frame);
 

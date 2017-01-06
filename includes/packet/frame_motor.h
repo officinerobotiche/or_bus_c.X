@@ -20,20 +20,11 @@
 
 #include <stdint.h>
 
+/******************************************************************************/
+/* Definition commands                                                        */
+/******************************************************************************/
 //Name for HASHMAP with information about motion messages
 #define HASHMAP_MOTOR 'G'
-
-/**
- * Define to select state of control for single motor
- */
-#define STATE_CONTROL_SAFETY        -2  ///< Motor disabled for high current
-#define STATE_CONTROL_EMERGENCY     -1  ///< Motor slow down to zero speed, then the bridge is turned off
-#define STATE_CONTROL_DISABLE       0   ///< Motor disabled
-#define STATE_CONTROL_POSITION      1   ///< Motor controlled in position
-#define STATE_CONTROL_VELOCITY      2   ///< Motor controlled in velocity
-#define STATE_CONTROL_CURRENT       3   ///< Motor controller in torque
-#define STATE_CONTROL_DIRECT        4   ///< Motor controlled using direct PWM signals
-
 /**
  * This union converts a command message in a motor index and type of command
  * - [#] maximum motor 2^3 = 8
@@ -47,7 +38,46 @@ typedef union _motor_command_map {
     } bitset;
     unsigned char command_message;
 } motor_command_map_t;
-
+/**
+ * Numbers associated for motor messages to be used 
+ * in the structure @ref motor_command_map_t as value for @ref command
+ */
+#define MOTOR_MEASURE             0
+#define MOTOR_REFERENCE           1
+#define MOTOR_CONTROL             2
+#define MOTOR_DIAGNOSTIC          3
+#define MOTOR_PARAMETER           4
+#define MOTOR_CONSTRAINT          5
+#define MOTOR_EMERGENCY           6
+#define MOTOR_STATE               7
+#define MOTOR_POS_RESET           8
+#define MOTOR_POS_PID             9
+#define MOTOR_POS_REF            10
+#define MOTOR_VEL_PID            11
+#define MOTOR_VEL_REF            12
+#define MOTOR_CURRENT_PID        13
+#define MOTOR_CURRENT_REF        14
+#define MOTOR_TORQUE_REF         15
+#define MOTOR_SAFETY             16
+/******************************************************************************/
+/* Definition messages                                                        */
+/******************************************************************************/
+/**
+ * Define to select state of control for single motor
+ */
+#define STATE_CONTROL_SAFETY        -2  ///< Motor disabled for high current
+#define STATE_CONTROL_EMERGENCY     -1  ///< Motor slow down to zero speed, then the bridge is turned off
+#define STATE_CONTROL_DISABLE       0   ///< Motor disabled
+#define STATE_CONTROL_POSITION      1   ///< Motor controlled in position
+#define STATE_CONTROL_VELOCITY      2   ///< Motor controlled in velocity
+#define STATE_CONTROL_CURRENT       3   ///< Motor controller in torque
+#define STATE_CONTROL_DIRECT        4   ///< Motor controlled using direct PWM signals
+/**
+ * Message to get status of a single motor
+ * - [#] state of control
+ */
+typedef int8_t motor_state_t;
+#define LNG_MOTOR_STATE sizeof(motor_state_t)
 /**
  * Message to control single motor
  * - [X] command or measure to control [physic dimension depends to type of command]
@@ -56,14 +86,6 @@ typedef union _motor_command_map {
 #define MOTOR_CONTROL_MIN INT32_MIN
 typedef int32_t motor_control_t;
 #define LNG_MOTOR_CONTROL sizeof(motor_control_t)
-
-/**
- * Message to get status of a single motor
- * - [#] state of control
- */
-typedef int8_t motor_state_t;
-#define LNG_MOTOR_STATE sizeof(motor_state_t)
-
 /**
  * Message for the status of the motor controller, information about:
  * - [*]       Value of PWM applied
@@ -82,7 +104,6 @@ typedef struct __attribute__ ((__packed__)) _motor {
     float position_delta;
 } motor_t;
 #define LNG_MOTOR sizeof(motor_t)
-
 /**
  * All diagnostic information about state of motor
  * - [#]       state motor - type of control
@@ -99,7 +120,6 @@ typedef struct __attribute__ ((__packed__)) _motor_diagnostic {
     uint32_t time_control;
 } motor_diagnostic_t;
 #define LNG_MOTOR_DIAGNOSTIC sizeof(motor_diagnostic_t)
-
 /**
  * Encoder type definition:
  * - [ 0, 1]    Position encoder respect to gear [0 before, 1 after]
@@ -128,7 +148,6 @@ typedef struct __attribute__ ((__packed__)) _motor_parameter_encoder {
     motor_encoder_type_t type;
 } motor_parameter_encoder_t;
 #define LNG_MOTOR_PARAMETER_ENCODER sizeof(motor_parameter_encoder_t)
-
 /**
  * Parameters definition for motor:
  * - [ 0, 1] Default logic value to enable the H-bridge [0 low, 1 high]
@@ -166,7 +185,6 @@ typedef struct __attribute__ ((__packed__)) _motor_parameter {
     motor_parameter_encoder_t encoder;
 } motor_parameter_t;
 #define LNG_MOTOR_PARAMETER sizeof(motor_parameter_t)
-
 /**
  * Message to launch the safety stop motor
  * - [#]  Warning value max
@@ -191,7 +209,6 @@ typedef struct __attribute__ ((__packed__)) _motor_emergency {
     uint16_t timeout;
 } motor_emergency_t;
 #define LNG_MOTOR_EMERGENCY sizeof(motor_emergency_t)
-
 /**
  * Message to define the gains for a PID controller
  * - [X] K_p  [Gain Proportional- physic dimension depends to type of control]
@@ -223,24 +240,5 @@ typedef union _motor_frame {
     motor_control_t reference;
     motor_safety_t safety;
 } motor_frame_u;
-
-//Numbers associated for motor messages to be used in the structure @ref motor_command_map_t as value for @ref command
-#define MOTOR_MEASURE             0 ///< TODO Explain what this means
-#define MOTOR_REFERENCE           1 ///< TODO Explain what this means
-#define MOTOR_CONTROL             2 ///< TODO Explain what this means
-#define MOTOR_DIAGNOSTIC          3 ///< TODO Explain what this means
-#define MOTOR_PARAMETER           4 ///< TODO Explain what this means
-#define MOTOR_CONSTRAINT          5 ///< TODO Explain what this means
-#define MOTOR_EMERGENCY           6 ///< TODO Explain what this means
-#define MOTOR_STATE               7 ///< TODO Explain what this means
-#define MOTOR_POS_RESET           8 ///< TODO Explain what this means
-#define MOTOR_POS_PID             9 ///< TODO Explain what this means
-#define MOTOR_POS_REF            10 ///< TODO Explain what this means
-#define MOTOR_VEL_PID            11 ///< TODO Explain what this means
-#define MOTOR_VEL_REF            12 ///< TODO Explain what this means
-#define MOTOR_CURRENT_PID        13 ///< TODO Explain what this means
-#define MOTOR_CURRENT_REF        14 ///< TODO Explain what this means
-#define MOTOR_TORQUE_REF         15 ///< TODO Explain what this means
-#define MOTOR_SAFETY             16 ///< TODO Explain what this means
 
 #endif	/* FRAMEMOTOR_H */

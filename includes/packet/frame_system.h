@@ -22,9 +22,23 @@
 extern "C" {
 #endif
     
+/******************************************************************************/
+/* Definition commands                                                        */
+/******************************************************************************/
 //Name for HASHMAP with information about standard messages
 #define HASHMAP_SYSTEM          'S'
-    
+//Number association for standard messages
+#define SYSTEM_RESET           '*'
+#define SYSTEM_CODE_DATE       'd'
+#define SYSTEM_CODE_VERSION    'v'
+#define SYSTEM_CODE_AUTHOR     'a'
+#define SYSTEM_CODE_BOARD_TYPE 't'
+#define SYSTEM_CODE_BOARD_NAME 'n'
+#define SYSTEM_SERIAL_ERROR     0
+#define SYSTEM_TIME             1
+/******************************************************************************/
+/* Definition messages                                                        */
+/******************************************************************************/
 // Type of serial errors
 #define MAX_BUFF_ERROR_SERIAL 13
 // Numbers of process names 
@@ -95,16 +109,6 @@ typedef union _system_frame {
     system_error_serial_t error_serial;
     system_time_t time;
 } system_frame_u;
-
-//Number association for standard messages
-#define SYSTEM_RESET           '*'
-#define SYSTEM_CODE_DATE       'd'
-#define SYSTEM_CODE_VERSION    'v'
-#define SYSTEM_CODE_AUTHOR     'a'
-#define SYSTEM_CODE_BOARD_TYPE 't'
-#define SYSTEM_CODE_BOARD_NAME 'n'
-#define SYSTEM_SERIAL_ERROR     0
-#define SYSTEM_TIME             1
 
 #ifdef	__cplusplus
 }

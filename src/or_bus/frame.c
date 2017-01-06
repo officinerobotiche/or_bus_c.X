@@ -63,7 +63,8 @@ inline void OR_BUS_FRAME_decoder(void* obj, unsigned char *buffer, size_t size) 
     OR_BUS_FRAME_build(frame);
 }
 
-void OR_BUS_FRAME_init(OR_BUS_FRAME_t *frame, unsigned char *buff) {
+void OR_BUS_FRAME_init(OR_BUS_FRAME_t *frame, unsigned char *buffTx, 
+        unsigned char *buffRx, unsigned int rx_size) {
     unsigned int i;
     // Initialization hash map controller
     for (i = 0; i < OR_BUS_FRAME_LNG_HASH_DECODER; ++i) {
@@ -71,13 +72,11 @@ void OR_BUS_FRAME_init(OR_BUS_FRAME_t *frame, unsigned char *buff) {
         frame->hash[i].pointer = NULL;
         frame->hash[i].obj = NULL;
     }
-    // Initialization buffer
-    frame->buff = buff;
     // Reset counter messages
-    frame->counter = 0;
+    frame->counter = OR_BUS_LNG_HEADER;
     // Initialization over BUS
-    OR_BUS_init(&frame->or_bus, &frame->buffTx[0], &frame->buffRx[0], 
-            OR_BUS_FRAME_LNG_FRAME, (void *)frame, &OR_BUS_FRAME_decoder);
+    OR_BUS_init(&frame->or_bus, buffTx, buffRx, rx_size, 
+            (void *)frame, &OR_BUS_FRAME_decoder);
 }
 
 bool OR_BUS_FRAME_register(OR_BUS_FRAME_t *frame, 
@@ -95,46 +94,56 @@ bool OR_BUS_FRAME_register(OR_BUS_FRAME_t *frame,
     return false;
 }
 /**
- * 
- * @param frame
- * @param type
- * @param hashmap
- * @param command
- * @param packet
- * @param length
+ * @brief Add a frame message inside the buffer.
+ * @param frame The frame controller
+ * @param type The type of message
+ * @param hashmap The associated hash map
+ * @param command The command request
+ * @param packet The packet to add
+ * @param length The length of the packet
+ * @return If available space in the buffer return true
  */
-void OR_BUS_FRAME_add(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_type_t type, 
-        OR_BUS_FRAME_hashmap_t hashmap, OR_BUS_FRAME_command_t command, 
+bool OR_BUS_FRAME_add(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_type_t type,
+        OR_BUS_FRAME_hashmap_t hashmap, OR_BUS_FRAME_command_t command,
         OR_BUS_FRAME_packet_t* packet, size_t length) {
-    // Copy all frame information in frames buffer
-    frame->buff[frame->counter]     = OR_BUS_LNG_PACKET_HEAD + length;
-    frame->buff[frame->counter + 1] = type;
-    frame->buff[frame->counter + 2] = hashmap;
-    frame->buff[frame->counter + 3] = command;
-    // Copy the message
-    if (type == OR_BUS_FRAME_DATA) {
-        memcpy(&frame->buff[frame->counter + OR_BUS_LNG_PACKET_HEAD], packet, length);
+    // Check if available space to add another packet
+    if (frame->counter + OR_BUS_LNG_PACKET_HEAD + length < frame->or_bus.rx_size) {
+        // Copy all frame information in frames buffer
+        frame->or_bus.tx.buff[frame->counter] = OR_BUS_LNG_PACKET_HEAD + length;
+        frame->or_bus.tx.buff[frame->counter + 1] = type;
+        frame->or_bus.tx.buff[frame->counter + 2] = hashmap;
+        frame->or_bus.tx.buff[frame->counter + 3] = command;
+        // Copy the message
+        if (type == OR_BUS_FRAME_DATA) {
+            memcpy(&frame->or_bus.tx.buff[frame->counter + OR_BUS_LNG_PACKET_HEAD], packet, length);
+        }
+        // Update counter size message
+        frame->counter += frame->or_bus.tx.buff[frame->counter];
+        return true;
     }
-    // Update counter size message
-    frame->counter += OR_BUS_LNG_PACKET_HEAD + length;
+    return false;
 }
 
-void OR_BUS_FRAME_add_data(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_hashmap_t hashmap, 
+bool OR_BUS_FRAME_add_data(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_hashmap_t hashmap, 
         OR_BUS_FRAME_command_t command, OR_BUS_FRAME_packet_t* packet, size_t length) {
-    OR_BUS_FRAME_add(frame, OR_BUS_FRAME_DATA, hashmap, command, packet, length);
+    return OR_BUS_FRAME_add(frame, OR_BUS_FRAME_DATA, hashmap, command, packet, length);
 }
 
-void OR_BUS_FRAME_add_request(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_type_t type, 
+bool OR_BUS_FRAME_add_request(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_type_t type, 
         OR_BUS_FRAME_hashmap_t hashmap, OR_BUS_FRAME_command_t command) {
-    OR_BUS_FRAME_add(frame, type, hashmap, command, NULL, 0);
+    return OR_BUS_FRAME_add(frame, type, hashmap, command, NULL, 0);
 }
 
 bool OR_BUS_FRAME_build(OR_BUS_FRAME_t *frame) {
     // Check are required to sent a message
     if(frame->counter > 0) {
-        OR_BUS_build(&frame->or_bus, frame->buff, frame->counter);
+        // Update length message
+        frame->or_bus.tx.buff[OR_BUS_POSITION_LNG] = frame->counter - OR_BUS_LNG_HEADER;
+        // Evaluating checksum and add in last position
+        frame->or_bus.tx.buff[frame->counter] = 
+                OR_BUS_pkg_checksum(frame->or_bus.tx.buff, OR_BUS_LNG_HEADER, frame->counter);
         // reset the frame counter
-        frame->counter = 0;
+        frame->counter = OR_BUS_LNG_HEADER;
         return true;
     } else 
         return false;

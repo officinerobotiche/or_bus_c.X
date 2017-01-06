@@ -56,22 +56,6 @@ void OR_BUS_init(OR_BUS_t *or_bus,
     or_bus->rx_cks = 0;
 }
 /**
- * Function to evaluate checksum. Count all bytes in a Buffer and return
- * number for checksum.
- * @param Buffer It's a buffer to sum all bytes
- * @param FirstIndx The number for first element buffer to count all bytes.
- * @param LastIndx The number for last element buffer.
- * @return number evaluated for sum bytes
- */
-unsigned char OR_BUS_pkg_checksum(volatile unsigned char* Buffer, int FirstIndx, int LastIndx) {
-    unsigned char ChkSum = 0;
-    int ChkCnt;
-    for (ChkCnt = FirstIndx; ChkCnt < LastIndx; ChkCnt++) {
-        ChkSum += Buffer[ChkCnt];
-    }
-    return ChkSum;
-}
-/**
  * Store all bytes and run check the checksum. If true launch the parser callback.
  * @param The OR_BUS controller
  * @param rxchar character received from interrupt
@@ -150,6 +134,15 @@ void OR_BUS_build(OR_BUS_t *or_bus, unsigned char *buff, size_t length) {
     // Collect all data inside the buffer send
     memcpy(&or_bus->tx.buff[2], buff, length);
     // Evaluating checksum and add in last position
-    or_bus->tx.buff[or_bus->tx.length + OR_BUS_LNG_PACKET_HEADER] = 
+    or_bus->tx.buff[or_bus->tx.length + OR_BUS_LNG_HEADER] = 
             OR_BUS_pkg_checksum(buff, 0, length);
+}
+
+unsigned char OR_BUS_pkg_checksum(volatile unsigned char* Buffer, int FirstIndx, int LastIndx) {
+    unsigned char ChkSum = 0;
+    int ChkCnt;
+    for (ChkCnt = FirstIndx; ChkCnt < LastIndx; ChkCnt++) {
+        ChkSum += Buffer[ChkCnt];
+    }
+    return ChkSum;
 }
