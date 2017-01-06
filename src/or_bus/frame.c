@@ -23,8 +23,8 @@
 #include <stdbool.h>       /* Includes true/false definition */
 #include <string.h>
 
-#include "or_bus/or_frame.h"
-#include "or_bus/or_message.h"
+#include "or_bus/frame.h"
+#include "or_bus/bus.h"
 
 #define HASHMAP_NUMBER 4
 
