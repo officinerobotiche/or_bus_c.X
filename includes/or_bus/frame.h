@@ -77,7 +77,7 @@ extern "C" {
         void* obj;
     } over_frame_hash_t;
     
-#define OR_BUS_FRAME_LNG_FRAME (4 * (OR_BUS_LNG_PACKET_HEAD + OR_BUS_FRAME_LNG_PACKET))
+#define OR_BUS_FRAME_LNG_FRAME OR_BUS_LNG_HEADER + (4 * (OR_BUS_LNG_PACKET_HEAD + OR_BUS_FRAME_LNG_PACKET))
     
     typedef struct _over_frame {
         OR_BUS_t or_bus;
@@ -128,6 +128,13 @@ extern "C" {
      */
     bool OR_BUS_FRAME_add_request(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_type_t type, 
         OR_BUS_FRAME_hashmap_t hashmap, OR_BUS_FRAME_command_t command);
+    /**
+     * @brief Decode a OR_BUS message
+     * @param The OR_BUS controller
+     * @param rxchar character received from interrupt
+     * @return the status of the decoder
+     */
+    OR_BUS_State_t OR_BUS_FRAME_decoder(OR_BUS_FRAME_t *frame, unsigned char rxchar);
     /**
      * @brief Build a OR BUS Frame packet.
      * @param frame The frame controller

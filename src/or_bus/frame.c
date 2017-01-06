@@ -40,7 +40,7 @@
  * @param buffer
  * @param size
  */
-inline void OR_BUS_FRAME_decoder(void* obj, unsigned char *buffer, size_t size) {
+inline void OR_BUS_FRAME_parser_cb(void* obj, unsigned char *buffer, size_t size) {
     OR_BUS_FRAME_t *frame = (OR_BUS_FRAME_t*) obj;
     unsigned int i, IdxHash;
     // In the first place is located the size of the frame message
@@ -76,7 +76,7 @@ void OR_BUS_FRAME_init(OR_BUS_FRAME_t *frame, unsigned char *buffTx,
     frame->counter = OR_BUS_LNG_HEADER;
     // Initialization over BUS
     OR_BUS_init(&frame->or_bus, buffTx, buffRx, rx_size, 
-            (void *)frame, &OR_BUS_FRAME_decoder);
+            (void *)frame, &OR_BUS_FRAME_parser_cb);
 }
 
 bool OR_BUS_FRAME_register(OR_BUS_FRAME_t *frame, 
@@ -132,6 +132,10 @@ bool OR_BUS_FRAME_add_data(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_hashmap_t hashmap
 bool OR_BUS_FRAME_add_request(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_type_t type, 
         OR_BUS_FRAME_hashmap_t hashmap, OR_BUS_FRAME_command_t command) {
     return OR_BUS_FRAME_add(frame, type, hashmap, command, NULL, 0);
+}
+
+OR_BUS_State_t OR_BUS_FRAME_decoder(OR_BUS_FRAME_t *frame, unsigned char rxchar) {
+    return OR_BUS_decoder(&frame->or_bus, rxchar);
 }
 
 bool OR_BUS_FRAME_build(OR_BUS_FRAME_t *frame) {
