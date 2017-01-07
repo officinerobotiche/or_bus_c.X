@@ -77,7 +77,7 @@ extern "C" {
         void* obj;
     } over_frame_hash_t;
     
-#define OR_BUS_FRAME_LNG_FRAME OR_BUS_LNG_HEADER + (4 * (OR_BUS_LNG_PACKET_HEAD + OR_BUS_FRAME_LNG_PACKET))
+#define OR_BUS_FRAME_LNG_FRAME OR_BUS_LNG_HEADER + (5 * (OR_BUS_LNG_PACKET_HEAD + OR_BUS_FRAME_LNG_PACKET))
     
     typedef struct _over_frame {
         OR_BUS_t or_bus;

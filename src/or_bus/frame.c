@@ -45,22 +45,35 @@ inline void OR_BUS_FRAME_parser_cb(void* obj, unsigned char *buffer, size_t size
     unsigned int i, IdxHash;
     // In the first place is located the size of the frame message
     for (i = 0; i < size; i += buffer[i]) {
-        // Find the associated callback
-        for (IdxHash = 0; IdxHash < OR_BUS_FRAME_LNG_HASH_DECODER; ++IdxHash) {
-            // Run the associated callback
-            if (frame->hash[IdxHash].pointer != NULL) {
-                // Check the type
-                if (frame->hash[IdxHash].hash == buffer[i + 2]) {
-                    // Launch the callback
-                    frame->hash[IdxHash].pointer(frame->hash[IdxHash].obj, 
-                            buffer[i + 1], buffer[i + 3], 
-                            (OR_BUS_FRAME_packet_t*) & buffer[i + 4]);
+        if (buffer[i + 2] != 0) {
+            // Find the associated callback
+            bool available = true;
+            for (IdxHash = 0; IdxHash < OR_BUS_FRAME_LNG_HASH_DECODER; ++IdxHash) {
+                // Run the associated callback
+                if (frame->hash[IdxHash].pointer != NULL) {
+                    // Check the type
+                    if (frame->hash[IdxHash].hash == buffer[i + 2]) {
+                        available = false;
+                        // Launch the callback
+                        frame->hash[IdxHash].pointer(frame->hash[IdxHash].obj,
+                                buffer[i + 1], buffer[i + 3],
+                                (OR_BUS_FRAME_packet_t*) & buffer[i + 4]);
+                        break;
+                    }
                 }
             }
+            // Otherwise send a NACK message
+            if(available) {
+                // Send alive message
+                OR_BUS_FRAME_add_request(frame, OR_BUS_FRAME_NACK,
+                        buffer[i + 2], buffer[i + 3]);
+            }
+        } else {
+            // Send alive message
+            OR_BUS_FRAME_add_request(frame, OR_BUS_FRAME_ACK,
+                    buffer[i + 2], buffer[i + 3]);
         }
     }
-    // Build the message and send
-    OR_BUS_FRAME_build(frame);
 }
 
 void OR_BUS_FRAME_init(OR_BUS_FRAME_t *frame, unsigned char *buffTx, 
@@ -140,12 +153,14 @@ OR_BUS_State_t OR_BUS_FRAME_decoder(OR_BUS_FRAME_t *frame, unsigned char rxchar)
 
 bool OR_BUS_FRAME_build(OR_BUS_FRAME_t *frame) {
     // Check are required to sent a message
-    if(frame->counter > 0) {
+    if(frame->counter > OR_BUS_LNG_HEADER) {
         // Update length message
         frame->or_bus.tx.buff[OR_BUS_POSITION_LNG] = frame->counter - OR_BUS_LNG_HEADER;
         // Evaluating checksum and add in last position
         frame->or_bus.tx.buff[frame->counter] = 
                 OR_BUS_pkg_checksum(frame->or_bus.tx.buff, OR_BUS_LNG_HEADER, frame->counter);
+        // Set transmission (TX) size
+        frame->or_bus.tx.length = frame->counter + 1;
         // reset the frame counter
         frame->counter = OR_BUS_LNG_HEADER;
         return true;

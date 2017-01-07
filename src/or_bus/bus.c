@@ -101,7 +101,7 @@ inline OR_BUS_State_t OR_BUS_length(void *or_bus, unsigned char rxchar) {
         _or_bus->read_decoder = &OR_BUS_data;
         _or_bus->rx.length = rxchar;
         // Initialization in checksum. Reset and add rxchar data
-        ((OR_BUS_t*)or_bus)->rx_cks = 0;
+        _or_bus->rx_cks = 0;
         // Reset Index data counter
         _or_bus->index_data = 0;
         return OR_BUS_PENDING;
