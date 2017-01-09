@@ -44,7 +44,7 @@ extern "C" {
      */
     typedef enum {
         OR_BUS_FRAME_NACK = 'N',
-        OR_BUS_FRAME_ACK = 'A',
+        OR_BUS_FRAME_ACK = 'K',
         OR_BUS_FRAME_DATA = 'D',
         OR_BUS_FRAME_REQUEST = 'R',
         OR_BUS_FRAME_EMPTY = 'E'
