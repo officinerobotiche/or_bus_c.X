@@ -25,6 +25,25 @@
 /* Parsing functions                                                          */
 /******************************************************************************/
 /**
+ * @brief Get number of hash
+ * @param frame The frame controller
+ * @param hash the hash to find
+ * @return the number. Return -1 if not available
+ */
+inline unsigned int OR_BUS_FRAME_getHash(OR_BUS_FRAME_t *frame, unsigned char hash) {
+    unsigned int IdxHash;
+    for (IdxHash = 0; IdxHash < OR_BUS_FRAME_LNG_HASH_DECODER; ++IdxHash) {
+        // Run the associated callback
+        if (frame->hash[IdxHash].pointer != NULL) {
+            // Check the type
+            if (frame->hash[IdxHash].hash == hash) {
+                return IdxHash;
+            }
+        }
+    }
+    return -1;
+}
+/**
  * In a packet we have more frame. A typical data packet have this structure:
  * -------------------------- ---------------------------- --------------------
  * | LNG | TYPE | HASH | CMD | --- DATA --- | ... | LNG | TYPE | HASH | CMD | .
@@ -42,29 +61,19 @@
  */
 inline void OR_BUS_FRAME_parser_cb(void* obj, unsigned char *buffer, size_t size) {
     OR_BUS_FRAME_t *frame = (OR_BUS_FRAME_t*) obj;
-    unsigned int i, IdxHash;
+    unsigned int i;
     // In the first place is located the size of the frame message
     for (i = 0; i < size; i += buffer[i]) {
         if (buffer[i + 2] != 0) {
             // Find the associated callback
-            bool available = true;
-            for (IdxHash = 0; IdxHash < OR_BUS_FRAME_LNG_HASH_DECODER; ++IdxHash) {
-                // Run the associated callback
-                if (frame->hash[IdxHash].pointer != NULL) {
-                    // Check the type
-                    if (frame->hash[IdxHash].hash == buffer[i + 2]) {
-                        available = false;
-                        // Launch the callback
-                        frame->hash[IdxHash].pointer(frame->hash[IdxHash].obj,
-                                buffer[i + 1], buffer[i + 3],
-                                (OR_BUS_FRAME_packet_t*) & buffer[i + 4]);
-                        break;
-                    }
-                }
-            }
-            // Otherwise send a NACK message
-            if(available) {
-                // Send alive message
+            unsigned int IdxHash = OR_BUS_FRAME_getHash(frame, buffer[i + 2]);
+            if(IdxHash >= 0) {
+                // Launch the callback
+                frame->hash[IdxHash].pointer(frame->hash[IdxHash].obj,
+                        buffer[i + 1], buffer[i + 3],
+                        (OR_BUS_FRAME_packet_t*) & buffer[i + 4]);
+            } else {
+                // Send error message
                 OR_BUS_FRAME_add_request(frame, OR_BUS_FRAME_NACK,
                         buffer[i + 2], buffer[i + 3]);
             }
