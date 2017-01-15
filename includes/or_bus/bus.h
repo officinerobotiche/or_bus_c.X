@@ -90,6 +90,11 @@ extern "C" {
      */
     OR_BUS_State_t OR_BUS_decoder(OR_BUS_t *or_bus, unsigned char rxchar);
     /**
+     * @brief Reset the OR_BUS parser
+     * @param The OR_BUS controller
+     */
+    void OR_BUS_reset(OR_BUS_t *or_bus);
+    /**
      * @brief Build a OR_BUS message from a starting buffer
      * Data structure:
      * ------------------------------------------------

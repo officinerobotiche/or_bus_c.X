@@ -30,7 +30,7 @@
  * @param hash the hash to find
  * @return the number. Return -1 if not available
  */
-inline unsigned int OR_BUS_FRAME_getHash(OR_BUS_FRAME_t *frame, unsigned char hash) {
+inline int OR_BUS_FRAME_getHash(OR_BUS_FRAME_t *frame, unsigned char hash) {
     unsigned int IdxHash;
     for (IdxHash = 0; IdxHash < OR_BUS_FRAME_LNG_HASH_DECODER; ++IdxHash) {
         // Run the associated callback
@@ -49,7 +49,7 @@ inline unsigned int OR_BUS_FRAME_getHash(OR_BUS_FRAME_t *frame, unsigned char ha
  * | LNG | TYPE | HASH | CMD | --- DATA --- | ... | LNG | TYPE | HASH | CMD | .
  * -------------------------- ---------------------------- --------------------
  *   [0]    [1]    [2]   [3]      [4]...[n]   ...   [i]   [i+1]  [i+2]  [i+3]
- * We have this struct of message
+ * We have this structure of message
  * [i]   Length
  * [i+1] Type
  * [i+2] Hash
@@ -115,6 +115,10 @@ bool OR_BUS_FRAME_register(OR_BUS_FRAME_t *frame,
     }
     return false;
 }
+
+void OR_BUS_FRAME_reset(OR_BUS_FRAME_t *frame) {
+    OR_BUS_reset(&frame->or_bus);
+}
 /**
  * @brief Add a frame message inside the buffer.
  * @param frame The frame controller
@@ -125,7 +129,7 @@ bool OR_BUS_FRAME_register(OR_BUS_FRAME_t *frame,
  * @param length The length of the packet
  * @return If available space in the buffer return true
  */
-bool OR_BUS_FRAME_add(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_type_t type,
+inline bool OR_BUS_FRAME_add(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_type_t type,
         OR_BUS_FRAME_hashmap_t hashmap, OR_BUS_FRAME_command_t command,
         OR_BUS_FRAME_packet_t* packet, size_t length) {
     // Check if available space to add another packet
@@ -137,7 +141,7 @@ bool OR_BUS_FRAME_add(OR_BUS_FRAME_t *frame, OR_BUS_FRAME_type_t type,
         frame->or_bus.tx.buff[frame->counter + 3] = command;
         // Copy the message
         if (type == OR_BUS_FRAME_DATA) {
-            memcpy(&frame->or_bus.tx.buff[frame->counter + OR_BUS_LNG_PACKET_HEAD], packet, length);
+            memmove(&frame->or_bus.tx.buff[frame->counter + OR_BUS_LNG_PACKET_HEAD], packet, length);
         }
         // Update counter size message
         frame->counter += frame->or_bus.tx.buff[frame->counter];

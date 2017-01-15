@@ -128,6 +128,11 @@ OR_BUS_State_t OR_BUS_decoder(OR_BUS_t *or_bus, unsigned char rxchar) {
     return (*or_bus->read_decoder)(or_bus, rxchar);
 }
 
+void OR_BUS_reset(OR_BUS_t *or_bus) {
+    // Reset the pointer in start position
+    or_bus->read_decoder = &OR_BUS_length;
+}
+
 void OR_BUS_build(OR_BUS_t *or_bus, unsigned char *buff, size_t length) {
     // Add the length of the message in the first place
     or_bus->tx.buff[1] = length;

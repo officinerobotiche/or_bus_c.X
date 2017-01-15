@@ -84,7 +84,7 @@ extern "C" {
         unsigned int counter;
         over_frame_hash_t hash[OR_BUS_FRAME_LNG_HASH_DECODER];
     } OR_BUS_FRAME_t;
-
+    
 /******************************************************************************/
 /* System Function Prototypes                                                 */
 /******************************************************************************/
@@ -107,6 +107,11 @@ extern "C" {
      */
     bool OR_BUS_FRAME_register(OR_BUS_FRAME_t *frame, 
             OR_BUS_FRAME_hashmap_t hashmap, OR_BUS_FRAME_parser cb, void *obj);
+    /**
+     * @brief Reset the OR_BUS parser
+     * @param frame The frame controller
+     */
+    void OR_BUS_FRAME_reset(OR_BUS_FRAME_t *frame);
     /**
      * @brief Add data in a frame message inside the buffer.
      * @param frame The frame controller
